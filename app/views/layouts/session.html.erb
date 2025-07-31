@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html data-theme="light>
+<html data-theme="light">
   <head>
-    <title><%= content_for(:title) || "Rails Tahfidz App" %></title>
+    <title><%= content_for(:title) || "Rails Social Media App" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -22,7 +22,7 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
+  <body class="flex flex-col justify-center items-center min-h-screen">
     <%= yield %>
   </body>
 </html>
