@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_01_100111) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_01_105613) do
   create_table "sessions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "ip_address"
@@ -23,14 +23,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_100111) do
   create_table "students", force: :cascade do |t|
     t.string "name"
     t.string "address"
-    t.string "birth_date"
+    t.date "birth_date"
     t.string "mother_name"
     t.string "father_name"
     t.date "date_joined"
-    t.integer "total_hifz_juz"
-    t.integer "current_hifz_juz"
-    t.integer "total_hifz_page"
-    t.integer "current_hifz_page"
+    t.integer "hifz_in_juz"
+    t.integer "hifz_in_page"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

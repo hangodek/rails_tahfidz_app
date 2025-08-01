@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  address: MyString
+  birth_date: 2025-08-01
+  mother_name: MyString
+  father_name: MyString
+  date_joined: 2025-08-01
+  hifz_in_juz: 1
+  hifz_in_page: 1
+
+two:
+  name: MyString
+  address: MyString
+  birth_date: 2025-08-01
+  mother_name: MyString
+  father_name: MyString
+  date_joined: 2025-08-01
+  hifz_in_juz: 1
+  hifz_in_page: 1
