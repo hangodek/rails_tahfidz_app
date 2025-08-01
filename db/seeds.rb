@@ -7,3 +7,7 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+puts "Seeding initial data..."
+
+User.create!(username: "admin", password: "admin", name: "Administrator", role: "admin") unless User.exists?(username: "admin")
