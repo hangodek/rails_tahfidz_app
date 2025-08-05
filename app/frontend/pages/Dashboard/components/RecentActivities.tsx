@@ -9,10 +9,10 @@ import {
 } from "lucide-react"
 
 const globalRecentActivities = [
-  { student: "Ahmad Fauzi", activity: "Menyelesaikan Al-Baqarah ayat 1-10", time: "2 jam lalu", type: "hafalan" },
-  { student: "Fatimah Zahra", activity: "Muroja'ah Ali Imran ayat 50-75", time: "3 jam lalu", type: "muroja" },
-  { student: "Muhammad Rizki", activity: "Setoran baru An-Nisa ayat 1-5", time: "4 jam lalu", type: "setoran" },
-  { student: "Aisyah Putri", activity: "Menyelesaikan Juz 12", time: "5 jam lalu", type: "completion" },
+  { student: "Ahmad Fauzi", activity: "Completed Al-Baqarah verses 1-10", time: "2 hours ago", type: "hafalan" },
+  { student: "Fatimah Zahra", activity: "Review Ali Imran verses 50-75", time: "3 hours ago", type: "muroja" },
+  { student: "Muhammad Rizki", activity: "New submission An-Nisa verses 1-5", time: "4 hours ago", type: "setoran" },
+  { student: "Aisyah Putri", activity: "Completed Juz 12", time: "5 hours ago", type: "completion" },
 ]
 
 export function RecentActivities() {
@@ -21,9 +21,9 @@ export function RecentActivities() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Clock className="h-5 w-5" />
-          Aktivitas Terbaru
+          Recent Activities
         </CardTitle>
-        <CardDescription>Aktivitas hafalan siswa dalam beberapa jam terakhir</CardDescription>
+        <CardDescription>Student memorization activities in the last few hours</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {globalRecentActivities.map((activity, index) => (

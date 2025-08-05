@@ -27,7 +27,7 @@ export default function Session() {
   return (
     <>
       <SessionLayout>
-        <Card className="w-full max-w-sm">
+        <Card className="w-full max-w-sm border-gray-200/60">
           <CardHeader>
             <CardTitle>Login to your account</CardTitle>
           </CardHeader>

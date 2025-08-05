@@ -16,8 +16,8 @@ import {
 } from "recharts"
 import { CalendarIcon, ChevronDown } from "lucide-react"
 
-// Generate daily submissions data for date range
-const generateDailySubmissions = (startDate: Date, endDate: Date) => {
+// Generate daily pages data for date range
+const generateDailyPages = (startDate: Date, endDate: Date) => {
   const data = []
   const currentDate = new Date(startDate)
 
@@ -25,7 +25,7 @@ const generateDailySubmissions = (startDate: Date, endDate: Date) => {
     data.push({
       date: format(currentDate, "dd/MM"),
       fullDate: format(currentDate, "yyyy-MM-dd"),
-      submissions: Math.floor(Math.random() * 30) + 20, // Random data between 20-50
+      pages: Math.floor(Math.random() * 30) + 20, // Random data between 20-50 pages
     })
     currentDate.setDate(currentDate.getDate() + 1)
   }
@@ -39,7 +39,7 @@ export function DailySubmissionsChart() {
     to: new Date(),
   })
 
-  const dailySubmissions = generateDailySubmissions(dateRange.from, dateRange.to)
+  const dailyPages = generateDailyPages(dateRange.from, dateRange.to)
 
   return (
     <Card className="col-span-2 border-gray-200/60 shadow-sm">
@@ -48,13 +48,13 @@ export function DailySubmissionsChart() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <CalendarIcon className="h-5 w-5" />
-              Setoran Harian
+              Daily Memorized Pages
             </CardTitle>
-            <CardDescription>Jumlah setoran hafalan semua siswa per hari</CardDescription>
+            <CardDescription>Number of Quran pages memorized by all students per day</CardDescription>
           </div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="border-gray-200/60">
+              <Button variant="outline" size="sm" className="border-gray-200/60 cursor-pointer">
                 <CalendarIcon className="h-4 w-4 mr-2" />
                 {format(dateRange.from, "dd MMM", { locale: id })} -{" "}
                 {format(dateRange.to, "dd MMM", { locale: id })}
@@ -64,7 +64,7 @@ export function DailySubmissionsChart() {
             <PopoverContent className="w-auto p-0 border-gray-200/60" align="end">
               <div className="p-4 space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Tanggal Mulai</label>
+                  <label className="text-sm font-medium">Start Date</label>
                   <Calendar
                     mode="single"
                     selected={dateRange.from}
@@ -74,7 +74,7 @@ export function DailySubmissionsChart() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Tanggal Akhir</label>
+                  <label className="text-sm font-medium">End Date</label>
                   <Calendar
                     mode="single"
                     selected={dateRange.to}
@@ -87,7 +87,7 @@ export function DailySubmissionsChart() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-gray-200/60"
+                    className="border-gray-200/60 cursor-pointer"
                     onClick={() =>
                       setDateRange({
                         from: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
@@ -95,12 +95,12 @@ export function DailySubmissionsChart() {
                       })
                     }
                   >
-                    7 Hari
+                    7 Days
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-gray-200/60"
+                    className="border-gray-200/60 cursor-pointer"
                     onClick={() =>
                       setDateRange({
                         from: new Date(Date.now() - 29 * 24 * 60 * 60 * 1000),
@@ -108,7 +108,7 @@ export function DailySubmissionsChart() {
                       })
                     }
                   >
-                    30 Hari
+                    30 Days
                   </Button>
                 </div>
               </div>
@@ -118,12 +118,12 @@ export function DailySubmissionsChart() {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={dailySubmissions}>
+          <BarChart data={dailyPages}>
             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="submissions" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="pages" fill="#3b82f6" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

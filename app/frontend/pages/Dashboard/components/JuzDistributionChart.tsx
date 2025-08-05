@@ -25,9 +25,9 @@ export function JuzDistributionChart() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BookOpen className="h-5 w-5" />
-          Distribusi Juz Siswa
+          Student Juz Distribution
         </CardTitle>
-        <CardDescription>Sebaran siswa berdasarkan juz yang sedang dihafal</CardDescription>
+        <CardDescription>Student distribution based on current memorization juz</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>

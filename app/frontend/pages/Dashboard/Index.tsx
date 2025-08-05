@@ -11,7 +11,7 @@ import {
 
 type DashboardProps = {}
 
-export default function Dashboard({}: DashboardProps) {
+export default function DashboardIndex({}: DashboardProps) {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <div className="flex flex-col space-y-6 p-6">
@@ -23,7 +23,7 @@ export default function Dashboard({}: DashboardProps) {
 
         {/* Charts Section */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Daily Submissions Chart with Date Range */}
+          {/* Daily Pages Chart with Date Range */}
           <DailySubmissionsChart />
 
           {/* Juz Distribution */}

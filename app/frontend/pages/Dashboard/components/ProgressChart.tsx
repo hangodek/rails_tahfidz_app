@@ -11,14 +11,14 @@ import {
 } from "recharts"
 import { TrendingUp } from "lucide-react"
 
-// Global data (would come from Rails props)
-const globalProgressData = [
-  { month: "Jan", completed: 8 },
-  { month: "Feb", completed: 9 },
-  { month: "Mar", completed: 11 },
-  { month: "Apr", completed: 12 },
-  { month: "Mei", completed: 14 },
-  { month: "Jun", completed: 15 },
+// Global murajaah data (would come from Rails props)
+const globalMurajaahData = [
+  { month: "Jan", recited: 45 },
+  { month: "Feb", recited: 52 },
+  { month: "Mar", recited: 68 },
+  { month: "Apr", recited: 71 },
+  { month: "May", recited: 84 },
+  { month: "Jun", recited: 92 },
 ]
 
 export function ProgressChart() {
@@ -27,19 +27,19 @@ export function ProgressChart() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <TrendingUp className="h-5 w-5" />
-          Progress Hafalan Bulanan
+          Monthly Murajaah Progress
         </CardTitle>
-        <CardDescription>Progress hafalan semua siswa per bulan (akumulatif)</CardDescription>
+        <CardDescription>Total juz recited by all students per month</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={globalProgressData}>
+          <LineChart data={globalMurajaahData}>
             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
             <XAxis dataKey="month" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="completed" stroke="#10b981" strokeWidth={3} name="Juz Selesai" />
+            <Line type="monotone" dataKey="recited" stroke="#10b981" strokeWidth={3} name="Recited Juz" />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>

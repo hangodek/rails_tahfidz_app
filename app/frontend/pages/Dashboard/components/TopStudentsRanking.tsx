@@ -21,9 +21,9 @@ export function TopStudentsRanking() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Award className="h-5 w-5" />
-          Ranking Siswa Terbaik
+          Top Students Ranking
         </CardTitle>
-        <CardDescription>5 siswa dengan hafalan terbanyak bulan ini</CardDescription>
+        <CardDescription>Top 5 students with most memorization this month</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {students.map((student, index) => (
@@ -51,7 +51,7 @@ export function TopStudentsRanking() {
               </div>
               <Progress value={student.progress} className="h-2" />
             </div>
-            <Button variant="ghost" size="sm" className="border border-gray-200/60" onClick={() => router.visit(`/students/${student.id}`)}>
+            <Button variant="ghost" size="sm" className="border border-gray-200/60 cursor-pointer" onClick={() => router.visit(`/students/${student.id}`)}>
               <User className="h-4 w-4" />
             </Button>
           </div>
