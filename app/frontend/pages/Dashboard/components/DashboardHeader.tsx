@@ -6,7 +6,7 @@ export function DashboardHeader() {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Tahfidz Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Hidz Dashboard</h1>
         <p className="text-muted-foreground">Monitor and analyze student Quran memorization progress</p>
       </div>
       <div className="flex items-center space-x-4">
@@ -14,7 +14,7 @@ export function DashboardHeader() {
           <Users className="h-4 w-4 mr-2" />
           View All Students
         </Button>
-        <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/teacher")}>
+        <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/teachers")}>
           <Mic className="h-4 w-4 mr-2" />
           Teacher Mode
         </Button>

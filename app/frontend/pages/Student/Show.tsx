@@ -57,7 +57,6 @@ interface Student {
   fatherPhone: string
   motherPhone: string
   dateJoined: string
-  targetCompletionDate: string
 }
 
 // Sample student data (would come from Rails props)
@@ -81,7 +80,6 @@ const allStudents = [
     fatherPhone: "+62 812-3456-7890",
     motherPhone: "+62 813-4567-8901",
     dateJoined: "1 September 2023",
-    targetCompletionDate: "Desember 2025",
   },
   {
     id: "2", 
@@ -102,7 +100,6 @@ const allStudents = [
     fatherPhone: "+62 822-3456-7890",
     motherPhone: "+62 823-4567-8901",
     dateJoined: "15 Agustus 2023",
-    targetCompletionDate: "November 2025",
   },
 ]
 
@@ -294,10 +291,6 @@ export default function StudentShow({ studentId }: StudentShowProps) {
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Date Joined</label>
                   <p className="text-sm">{currentStudent.dateJoined}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Target Completion Date</label>
-                  <p className="text-sm">{currentStudent.targetCompletionDate}</p>
                 </div>
               </div>
             </div>
