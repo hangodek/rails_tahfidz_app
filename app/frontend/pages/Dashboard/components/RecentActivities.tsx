@@ -25,11 +25,11 @@ export function RecentActivities() {
         </CardTitle>
         <CardDescription>Student memorization activities in the last few hours</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4">
         {globalRecentActivities.map((activity, index) => (
           <div key={index} className="flex items-start space-x-3">
             <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-white text-xs ${
+              className={`flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full text-white text-xs flex-shrink-0 ${
                 activity.type === "hafalan"
                   ? "bg-blue-500"
                   : activity.type === "muroja"
@@ -42,20 +42,20 @@ export function RecentActivities() {
               }`}
             >
               {activity.type === "hafalan" ? (
-                <BookOpen className="h-4 w-4" />
+                <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
               ) : activity.type === "muroja" ? (
-                <Star className="h-4 w-4" />
+                <Star className="h-3 w-3 sm:h-4 sm:w-4" />
               ) : activity.type === "setoran" ? (
-                <CalendarIcon className="h-4 w-4" />
+                <CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4" />
               ) : activity.type === "completion" ? (
-                <Award className="h-4 w-4" />
+                <Award className="h-3 w-3 sm:h-4 sm:w-4" />
               ) : (
-                <Target className="h-4 w-4" />
+                <Target className="h-3 w-3 sm:h-4 sm:w-4" />
               )}
             </div>
-            <div className="flex-1 space-y-1">
-              <p className="text-sm font-medium">{activity.student}</p>
-              <p className="text-xs text-muted-foreground">{activity.activity}</p>
+            <div className="flex-1 space-y-1 min-w-0">
+              <p className="text-xs sm:text-sm font-medium">{activity.student}</p>
+              <p className="text-xs text-muted-foreground line-clamp-2">{activity.activity}</p>
               <p className="text-xs text-muted-foreground">{activity.time}</p>
             </div>
           </div>

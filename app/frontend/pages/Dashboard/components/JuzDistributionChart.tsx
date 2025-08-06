@@ -30,14 +30,14 @@ export function JuzDistributionChart() {
         <CardDescription>Student distribution based on current memorization juz</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
+        <ResponsiveContainer width="100%" height={250}>
+          <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
             <Pie
               data={juzDistribution}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={100}
+              innerRadius={50}
+              outerRadius={90}
               paddingAngle={5}
               dataKey="value"
             >
@@ -45,8 +45,13 @@ export function JuzDistributionChart() {
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip />
-            <Legend />
+            <Tooltip 
+              labelStyle={{ fontSize: '14px' }}
+              contentStyle={{ fontSize: '14px' }}
+            />
+            <Legend 
+              wrapperStyle={{ fontSize: '14px' }}
+            />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>

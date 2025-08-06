@@ -3,7 +3,7 @@ import { CalendarIcon, TrendingUp } from "lucide-react"
 
 export function StatsCards() {
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
       <Card className="border-gray-200/60 shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Today's Submissions</CardTitle>

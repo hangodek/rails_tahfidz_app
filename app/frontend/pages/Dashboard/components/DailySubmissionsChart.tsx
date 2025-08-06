@@ -44,7 +44,7 @@ export function DailySubmissionsChart() {
   return (
     <Card className="col-span-2 border-gray-200/60 shadow-sm">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0">
           <div>
             <CardTitle className="flex items-center gap-2">
               <CalendarIcon className="h-5 w-5" />
@@ -54,10 +54,12 @@ export function DailySubmissionsChart() {
           </div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="border-gray-200/60 cursor-pointer">
+              <Button variant="outline" size="sm" className="border-gray-200/60 cursor-pointer w-full md:w-auto">
                 <CalendarIcon className="h-4 w-4 mr-2" />
-                {format(dateRange.from, "dd MMM", { locale: id })} -{" "}
-                {format(dateRange.to, "dd MMM", { locale: id })}
+                <span className="text-xs sm:text-sm">
+                  {format(dateRange.from, "dd MMM", { locale: id })} -{" "}
+                  {format(dateRange.to, "dd MMM", { locale: id })}
+                </span>
                 <ChevronDown className="h-4 w-4 ml-2" />
               </Button>
             </PopoverTrigger>
@@ -87,7 +89,7 @@ export function DailySubmissionsChart() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-gray-200/60 cursor-pointer"
+                    className="border-gray-200/60 cursor-pointer text-xs"
                     onClick={() =>
                       setDateRange({
                         from: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
@@ -100,7 +102,7 @@ export function DailySubmissionsChart() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-gray-200/60 cursor-pointer"
+                    className="border-gray-200/60 cursor-pointer text-xs"
                     onClick={() =>
                       setDateRange({
                         from: new Date(Date.now() - 29 * 24 * 60 * 60 * 1000),
@@ -117,12 +119,22 @@ export function DailySubmissionsChart() {
         </div>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={dailyPages}>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart data={dailyPages} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
+            <XAxis 
+              dataKey="date" 
+              fontSize={12}
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis 
+              fontSize={12}
+              tick={{ fontSize: 12 }}
+            />
+            <Tooltip 
+              labelStyle={{ fontSize: '12px' }}
+              contentStyle={{ fontSize: '12px' }}
+            />
             <Bar dataKey="pages" fill="#3b82f6" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>

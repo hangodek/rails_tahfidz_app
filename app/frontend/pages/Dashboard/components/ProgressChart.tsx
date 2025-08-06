@@ -32,13 +32,25 @@ export function ProgressChart() {
         <CardDescription>Total juz recited by all students per month</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={globalMurajaahData}>
+        <ResponsiveContainer width="100%" height={280}>
+          <LineChart data={globalMurajaahData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
+            <XAxis 
+              dataKey="month" 
+              fontSize={12}
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis 
+              fontSize={12}
+              tick={{ fontSize: 12 }}
+            />
+            <Tooltip 
+              labelStyle={{ fontSize: '12px' }}
+              contentStyle={{ fontSize: '12px' }}
+            />
+            <Legend 
+              wrapperStyle={{ fontSize: '12px' }}
+            />
             <Line type="monotone" dataKey="recited" stroke="#10b981" strokeWidth={3} name="Recited Juz" />
           </LineChart>
         </ResponsiveContainer>
