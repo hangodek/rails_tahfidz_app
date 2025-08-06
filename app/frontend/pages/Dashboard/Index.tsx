@@ -41,7 +41,7 @@ export default function DashboardIndex({}: DashboardProps) {
         </div>
 
         {/* Charts Section - Hidden on mobile, shown on tablet+ */}
-        <div className="hidden md:grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="hidden md:flex md:flex-col lg:grid gap-6 lg:grid-cols-3">
           {/* Daily Pages Chart with Date Range */}
           <DailySubmissionsChart />
 
