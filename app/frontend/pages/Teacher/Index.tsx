@@ -26,8 +26,6 @@ import {
   Database,
   CheckCircle,
   Users,
-  Shield,
-  LogOut
 } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 import { router } from "@inertiajs/react"
@@ -503,28 +501,30 @@ export default function TeacherIndex({}: TeacherIndexProps) {
 
   return (
     <div className="min-h-screen bg-gray-50/50">
-      <div className="flex flex-col space-y-6 p-6">
+      <div className="flex flex-col space-y-4 sm:space-y-6 p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Hidz Dashboard</h1>
-            <p className="text-muted-foreground">Monitor and analyze student Quran memorization progress</p>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Hidz Dashboard</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Monitor and analyze student Quran memorization progress</p>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
             <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/students")}>
               <Users className="h-4 w-4 mr-2" />
-              View All Students
+              <span className="hidden sm:inline">View All Students</span>
+              <span className="sm:hidden">Students</span>
             </Button>
             <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/dashboard")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
+              <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
           {/* Student Selection & Recording */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Student Selection */}
             <Card className="border-gray-200/60 shadow-sm">
               <CardHeader>
@@ -533,14 +533,14 @@ export default function TeacherIndex({}: TeacherIndexProps) {
               </CardHeader>
               <CardContent>
                 <Select value={selectedStudent} onValueChange={setSelectedStudent}>
-                  <SelectTrigger className="border-gray-200/60">
+                  <SelectTrigger className="border-gray-200/60 cursor-pointer">
                     <SelectValue placeholder="Select student..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="border-gray-200/60">
                     {students.map((student) => (
-                      <SelectItem key={student.id} value={student.id}>
-                        <div className="flex items-center space-x-3">
-                          <Avatar className="h-6 w-6">
+                      <SelectItem key={student.id} value={student.id} className="cursor-pointer">
+                        <div className="flex gap-2 items-centerspace-x-2 sm:space-x-3">
+                          <Avatar className="h-5 w-5 sm:h-6 sm:w-6">
                             <AvatarImage src={student.avatar || "/placeholder.svg"} />
                             <AvatarFallback className="text-xs">
                               {student.name
@@ -550,8 +550,8 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <span className="font-medium">{student.name}</span>
-                            <span className="text-sm text-muted-foreground ml-2">
+                            <span className="font-medium text-sm sm:text-base">{student.name}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground ml-1 sm:ml-2">
                               {student.class} - Juz {student.currentJuz}
                             </span>
                           </div>
@@ -562,9 +562,9 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                 </Select>
 
                 {currentStudent && (
-                  <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-12 w-12">
+                  <div className="mt-4 p-3 sm:p-4 bg-blue-50 rounded-lg">
+                    <div className="flex items-center space-x-2 sm:space-x-3">
+                      <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
                         <AvatarImage src={currentStudent.avatar || "/placeholder.svg"} />
                         <AvatarFallback>
                           {currentStudent.name
@@ -574,9 +574,9 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <h3 className="font-semibold">{currentStudent.name}</h3>
-                        <p className="text-sm text-muted-foreground">{currentStudent.class}</p>
-                        <Badge variant="secondary">Juz {currentStudent.currentJuz}</Badge>
+                        <h3 className="text-sm sm:text-base font-semibold">{currentStudent.name}</h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{currentStudent.class}</p>
+                        <Badge variant="secondary" className="text-xs">Juz {currentStudent.currentJuz}</Badge>
                       </div>
                     </div>
                   </div>
@@ -595,24 +595,25 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                 <CardDescription>Record student voice during memorization session {isSaved && "- Saved to database"}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-center space-x-4">
+                <div className="flex items-center justify-center space-x-3 sm:space-x-4">
                   {!isRecording ? (
                     <Button
                       onClick={startRecording}
                       disabled={!selectedStudent}
                       size="lg"
-                      className="bg-red-500 hover:bg-red-600 cursor-pointer"
+                      className="bg-red-500 hover:bg-red-600 cursor-pointer text-sm sm:text-base"
                     >
-                      <Mic className="h-5 w-5 mr-2" />
-                      Start Recording
+                      <Mic className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                      <span className="hidden sm:inline">Start Recording</span>
+                      <span className="sm:hidden">Record</span>
                     </Button>
                   ) : (
                     <div className="flex space-x-2">
                       <Button onClick={pauseRecording} variant="outline" size="lg" className="cursor-pointer border-gray-200/60">
-                        {isPaused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
+                        {isPaused ? <Play className="h-4 w-4 sm:h-5 sm:w-5" /> : <Pause className="h-4 w-4 sm:h-5 sm:w-5" />}
                       </Button>
                       <Button onClick={stopRecording} variant="outline" size="lg" className="cursor-pointer border-gray-200/60">
-                        <Square className="h-5 w-5" />
+                        <Square className="h-4 w-4 sm:h-5 sm:w-5" />
                       </Button>
                     </div>
                   )}
@@ -620,28 +621,29 @@ export default function TeacherIndex({}: TeacherIndexProps) {
 
                 {isRecording && (
                   <div className="text-center">
-                    <div className="text-2xl font-mono font-bold text-red-500">{formatTime(recordingTime)}</div>
+                    <div className="text-xl sm:text-2xl font-mono font-bold text-red-500">{formatTime(recordingTime)}</div>
                     <div className="flex items-center justify-center space-x-2 mt-2">
                       <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                      <span className="text-sm text-muted-foreground">{isPaused ? "Paused" : "Recording..."}</span>
+                      <span className="text-xs sm:text-sm text-muted-foreground">{isPaused ? "Paused" : "Recording..."}</span>
                     </div>
                   </div>
                 )}
 
                 {audioUrl && (
                   <div className="space-y-3">
-                    <div className="flex items-center justify-center space-x-4">
+                    <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4">
                       <Button onClick={playAudio} variant="outline" className="cursor-pointer border-gray-200/60">
                         {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                       </Button>
-                      <span className="text-sm text-muted-foreground">Duration: {formatTime(recordingTime)}</span>
+                      <span className="text-xs sm:text-sm text-muted-foreground">Duration: {formatTime(recordingTime)}</span>
                       <Button onClick={downloadAudio} variant="outline" size="sm" className="cursor-pointer border-gray-200/60">
                         <Download className="h-4 w-4" />
                       </Button>
                       {!isSaved && (
                         <Badge variant="outline" className="text-orange-600">
                           <Database className="h-3 w-3 mr-1" />
-                          Not Saved
+                          <span className="hidden sm:inline">Not Saved</span>
+                          <span className="sm:hidden">Unsaved</span>
                         </Badge>
                       )}
                     </div>
@@ -663,9 +665,9 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {savedRecordings.map((recording, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8">
+                    <div key={index} className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                        <Avatar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
                           <AvatarFallback className="text-xs">
                             {recording.studentName
                               .split(" ")
@@ -673,14 +675,14 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                               .join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <p className="text-sm font-medium">{recording.studentName}</p>
-                          <p className="text-xs text-muted-foreground">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs sm:text-sm font-medium truncate">{recording.studentName}</p>
+                          <p className="text-xs text-muted-foreground truncate">
                             {recording.activityType} - {formatTime(recording.duration)}
                           </p>
                         </div>
                       </div>
-                      <div className="text-xs text-muted-foreground">{recording.date}</div>
+                      <div className="text-xs text-muted-foreground flex-shrink-0">{recording.date}</div>
                     </div>
                   ))}
                 </CardContent>
@@ -689,7 +691,7 @@ export default function TeacherIndex({}: TeacherIndexProps) {
           </div>
 
           {/* Activity Form */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card className="border-gray-200/60 shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -702,12 +704,12 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                 <div className="space-y-2">
                   <Label>Activity Type</Label>
                   <Select value={activityType} onValueChange={setActivityType}>
-                    <SelectTrigger className="border-gray-200/60">
+                    <SelectTrigger className="border-gray-200/60 cursor-pointer">
                       <SelectValue placeholder="Select activity type..." />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="border-gray-200/60">
                       {activityTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
+                        <SelectItem key={type.value} value={type.value} className="cursor-pointer">
                           <div className="flex items-center space-x-2">
                             <div className={`w-3 h-3 rounded-full ${type.color}`}></div>
                             <span>{type.label}</span>
@@ -730,12 +732,12 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                             value={activityDetails.surah}
                             onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, surah: value }))}
                           >
-                            <SelectTrigger className="border-gray-200/60">
+                            <SelectTrigger className="border-gray-200/60 cursor-pointer">
                               <SelectValue placeholder="Select surah..." />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="border-gray-200/60">
                               {surahList.map((surah, index) => (
-                                <SelectItem key={index} value={surah}>
+                                <SelectItem key={index} value={surah} className="cursor-pointer">
                                   {index + 1}. {surah}
                                 </SelectItem>
                               ))}
@@ -745,23 +747,23 @@ export default function TeacherIndex({}: TeacherIndexProps) {
 
                         <div className="grid grid-cols-2 gap-2">
                           <div className="space-y-2">
-                            <Label>Verse From</Label>
+                            <Label className="text-xs sm:text-sm">Verse From</Label>
                             <Input
                               type="number"
                               placeholder="1"
                               value={activityDetails.ayatFrom}
                               onChange={(e) => setActivityDetails((prev) => ({ ...prev, ayatFrom: e.target.value }))}
-                              className="border-gray-200/60"
+                              className="border-gray-200/60 text-sm"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label>Verse To</Label>
+                            <Label className="text-xs sm:text-sm">Verse To</Label>
                             <Input
                               type="number"
                               placeholder="10"
                               value={activityDetails.ayatTo}
                               onChange={(e) => setActivityDetails((prev) => ({ ...prev, ayatTo: e.target.value }))}
-                              className="border-gray-200/60"
+                              className="border-gray-200/60 text-sm"
                             />
                           </div>
                         </div>
@@ -805,21 +807,22 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                         value={activityDetails.evaluation}
                         onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, evaluation: value }))}
                       >
-                        <SelectTrigger className="border-gray-200/60">
+                        <SelectTrigger className="border-gray-200/60 cursor-pointer">
                           <SelectValue placeholder="Select evaluation..." />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="sangat_baik">Excellent</SelectItem>
-                          <SelectItem value="baik">Good</SelectItem>
-                          <SelectItem value="cukup">Fair</SelectItem>
-                          <SelectItem value="perlu_perbaikan">Needs Improvement</SelectItem>
+                        <SelectContent className="border-gray-200/60">
+                          <SelectItem value="sangat_baik" className="cursor-pointer">Excellent</SelectItem>
+                          <SelectItem value="baik" className="cursor-pointer">Good</SelectItem>
+                          <SelectItem value="cukup" className="cursor-pointer">Fair</SelectItem>
+                          <SelectItem value="perlu_perbaikan" className="cursor-pointer">Needs Improvement</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    <Button onClick={handleSaveActivity} className="w-full cursor-pointer">
+                    <Button onClick={handleSaveActivity} className="w-full cursor-pointer text-sm sm:text-base">
                       <Save className="h-4 w-4 mr-2" />
-                      Save Activity
+                      <span className="hidden sm:inline">Save Activity</span>
+                      <span className="sm:hidden">Save</span>
                     </Button>
                   </>
                 )}
@@ -841,14 +844,14 @@ export default function TeacherIndex({}: TeacherIndexProps) {
                   ].map((activity, index) => {
                     const activityType = activityTypes.find((t) => t.value === activity.type)
                     return (
-                      <div key={index} className="flex items-start space-x-3">
+                      <div key={index} className="flex items-start space-x-2 sm:space-x-3">
                         <div
-                          className={`flex h-8 w-8 items-center justify-center rounded-full text-white text-xs ${activityType?.color}`}
+                          className={`flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full text-white text-xs ${activityType?.color}`}
                         >
-                          {activityType && <activityType.icon className="h-4 w-4" />}
+                          {activityType && <activityType.icon className="h-3 w-3 sm:h-4 sm:w-4" />}
                         </div>
-                        <div className="flex-1 space-y-1">
-                          <p className="text-sm font-medium">{activity.activity}</p>
+                        <div className="flex-1 space-y-1 min-w-0">
+                          <p className="text-xs sm:text-sm font-medium truncate">{activity.activity}</p>
                           <p className="text-xs text-muted-foreground">{activity.time}</p>
                         </div>
                       </div>
