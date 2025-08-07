@@ -25,7 +25,7 @@ export default function DashboardIndex({}: DashboardProps) {
 
         {/* Mobile Chart Notice */}
         <div className="md:hidden">
-          <Card className="border-blue-200/60 bg-blue-50/30">
+          <Card className="border-blue-200/60 bg-blue-50/30 shadow-md">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">

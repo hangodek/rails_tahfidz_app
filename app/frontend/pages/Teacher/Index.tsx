@@ -526,7 +526,7 @@ export default function TeacherIndex({}: TeacherIndexProps) {
           {/* Student Selection & Recording */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Student Selection */}
-            <Card className="border-gray-200/60 shadow-sm">
+            <Card className="border-gray-200/60 shadow-lg">
               <CardHeader>
                 <CardTitle>Select Student</CardTitle>
                 <CardDescription>Choose student for memorization session</CardDescription>
@@ -585,7 +585,7 @@ export default function TeacherIndex({}: TeacherIndexProps) {
             </Card>
 
             {/* Voice Recording */}
-            <Card className="border-gray-200/60 shadow-sm">
+            <Card className="border-gray-200/60 shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Mic className="h-5 w-5" />
@@ -655,7 +655,7 @@ export default function TeacherIndex({}: TeacherIndexProps) {
 
             {/* Saved Recordings */}
             {savedRecordings.length > 0 && (
-              <Card className="border-gray-200/60 shadow-sm">
+              <Card className="border-gray-200/60 shadow-lg">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Database className="h-5 w-5" />
@@ -692,7 +692,7 @@ export default function TeacherIndex({}: TeacherIndexProps) {
 
           {/* Activity Form */}
           <div className="space-y-4 sm:space-y-6">
-            <Card className="border-gray-200/60 shadow-sm">
+            <Card className="border-gray-200/60 shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Plus className="h-5 w-5" />
@@ -831,7 +831,7 @@ export default function TeacherIndex({}: TeacherIndexProps) {
 
             {/* Recent Activities for Selected Student */}
             {currentStudent && (
-              <Card className="border-gray-200/60 shadow-sm">
+              <Card className="border-gray-200/60 shadow-lg">
                 <CardHeader>
                   <CardTitle>Recent Activities</CardTitle>
                   <CardDescription>{currentStudent.name}</CardDescription>

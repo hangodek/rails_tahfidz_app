@@ -416,7 +416,7 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
         </div>
 
         {/* Filters and Search */}
-        <Card className="border-gray-200/60 shadow-sm">
+        <Card className="border-gray-200/60 shadow-lg">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center gap-3 mb-4">
               <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
@@ -497,7 +497,7 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
 
         {/* Stats Summary */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-xs sm:text-sm font-medium">Total Students</CardTitle>
               <Users className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
@@ -508,7 +508,7 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
             </CardContent>
           </Card>
 
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-xs sm:text-sm font-medium">Active Students</CardTitle>
               <Users className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
@@ -521,7 +521,7 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
             </CardContent>
           </Card>
 
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-xs sm:text-sm font-medium">Inactive Students</CardTitle>
               <Users className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
@@ -534,7 +534,7 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
             </CardContent>
           </Card>
 
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-xs sm:text-sm font-medium">Graduated Students</CardTitle>
               <Award className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
@@ -549,7 +549,7 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
         {viewMode === "grid" ? (
           <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {filteredStudents.map((student) => (
-              <Card key={student.id} className="hover:shadow-md transition-shadow border-gray-200/60 shadow-sm">
+              <Card key={student.id} className="hover:shadow-xl transition-shadow border-gray-200/60 shadow-lg">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -616,7 +616,7 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
             ))}
           </div>
         ) : (
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardContent className="p-0">
               <div className="divide-y divide-gray-200/60">
                 {filteredStudents.map((student) => (
@@ -676,7 +676,7 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
         )}
 
         {filteredStudents.length === 0 && (
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardContent className="text-center py-8 sm:py-12">
               <User className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-base sm:text-lg font-medium mb-2">No students found</h3>

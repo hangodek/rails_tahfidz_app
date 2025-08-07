@@ -4,7 +4,7 @@ import { CalendarIcon, BookOpen, Star } from "lucide-react"
 export function StatsCards() {
   return (
     <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-      <Card className="border-gray-200/60 shadow-sm">
+      <Card className="border-gray-200/60 shadow-lg">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Today's Submissions</CardTitle>
           <CalendarIcon className="h-4 w-4 text-blue-500" />
@@ -17,7 +17,7 @@ export function StatsCards() {
         </CardContent>
       </Card>
 
-      <Card className="border-gray-200/60 shadow-sm">
+      <Card className="border-gray-200/60 shadow-lg">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Students Doing Murajaah Today</CardTitle>
           <BookOpen className="h-4 w-4 text-green-500" />
@@ -30,7 +30,7 @@ export function StatsCards() {
         </CardContent>
       </Card>
       
-      <Card className="border-gray-200/60 shadow-sm">
+      <Card className="border-gray-200/60 shadow-lg">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Students Memorizing Today</CardTitle>
           <BookOpen className="h-4 w-4 text-orange-500" />

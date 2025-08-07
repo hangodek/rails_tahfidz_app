@@ -17,7 +17,7 @@ const globalRecentActivities = [
 
 export function RecentActivities() {
   return (
-    <Card className="border-gray-200/60 shadow-sm">
+    <Card className="border-gray-200/60 shadow-lg">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Clock className="h-5 w-5" />
