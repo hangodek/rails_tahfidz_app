@@ -389,40 +389,43 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
 
   return (
     <div className="min-h-screen bg-gray-50/50">
-      <div className="flex flex-col space-y-6 p-6">
+      <div className="flex flex-col space-y-4 sm:space-y-6 p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Student List</h1>
-            <p className="text-muted-foreground">Manage and monitor Quran memorization student data</p>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Student List</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Manage and monitor Quran memorization student data</p>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
             <Button variant="outline" className="border-gray-200/60 cursor-pointer">
               <Plus className="h-4 w-4 mr-2" />
-              Add Student
+              <span className="hidden sm:inline">Add Student</span>
+              <span className="sm:hidden">Add</span>
             </Button>
             <Button variant="outline" className="border-gray-200/60 cursor-pointer">
               <Download className="h-4 w-4 mr-2" />
-              Export Data
+              <span className="hidden sm:inline">Export Data</span>
+              <span className="sm:hidden">Export</span>
             </Button>
             <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/dashboard")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
+              <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="sm:hidden">Back</span>
             </Button>
           </div>
         </div>
 
         {/* Filters and Search */}
         <Card className="border-gray-200/60 shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4 mb-4">
-              <Filter className="h-5 w-5 text-gray-600" />
-              <h2 className="text-lg font-semibold text-gray-900">Filter & Search</h2>
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">Filter & Search</h2>
             </div>
             
-            <div className="flex flex-wrap gap-4 items-center justify-between">
-              <div className="flex gap-4 items-center flex-1">
-                <div className="relative flex-1 max-w-sm">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center flex-1">
+                <div className="relative flex-1 max-w-full sm:max-w-sm">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search student name..."
@@ -431,71 +434,87 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
                     className="pl-10 border-gray-200/60"
                   />
                 </div>
-                <Select value={classFilter} onValueChange={setClassFilter}>
-                  <SelectTrigger className="w-[140px] border-gray-200/60">
-                    <SelectValue placeholder="All Classes" />
-                  </SelectTrigger>
-                  <SelectContent className="border-gray-200/60">
-                    <SelectItem value="all">All Classes</SelectItem>
-                    <SelectItem value="Kelas A">Class A</SelectItem>
-                    <SelectItem value="Kelas B">Class B</SelectItem>
-                    <SelectItem value="Kelas C">Class C</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[140px] border-gray-200/60">
-                    <SelectValue placeholder="All Status" />
-                  </SelectTrigger>
-                  <SelectContent className="border-gray-200/60">
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="graduated">Graduated</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "outline"}
-                  size="sm"
-                  className="border-gray-200/60 cursor-pointer"
-                  onClick={() => setViewMode("grid")}
-                >
-                  Grid
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "outline"}
-                  size="sm"
-                  className="border-gray-200/60 cursor-pointer"
-                  onClick={() => setViewMode("list")}
-                >
-                  List
-                </Button>
+                <div className="flex flex-wrap justify-center items-center gap-2 sm:flex sm:gap-4">
+                  <Select value={classFilter} onValueChange={setClassFilter}>
+                    <SelectTrigger className="border-gray-200/60">
+                      <SelectValue placeholder="All Classes" />
+                    </SelectTrigger>
+                    <SelectContent className="border-gray-200/60">
+                      <SelectItem value="all">All Classes</SelectItem>
+                      <SelectItem value="Kelas A">Class A</SelectItem>
+                      <SelectItem value="Kelas B">Class B</SelectItem>
+                      <SelectItem value="Kelas C">Class C</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="border-gray-200/60">
+                      <SelectValue placeholder="All Status" />
+                    </SelectTrigger>
+                    <SelectContent className="border-gray-200/60">
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                      <SelectItem value="graduated">Graduated</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={juzFilter} onValueChange={setJuzFilter}>
+                    <SelectTrigger className="border-gray-200/60">
+                      <SelectValue placeholder="All Juz" />
+                    </SelectTrigger>
+                    <SelectContent className="border-gray-200/60">
+                      <SelectItem value="all">All Juz</SelectItem>
+                      <SelectItem value="Juz 1-5">Juz 1-5</SelectItem>
+                      <SelectItem value="Juz 6-10">Juz 6-10</SelectItem>
+                      <SelectItem value="Juz 11-15">Juz 11-15</SelectItem>
+                      <SelectItem value="Juz 16-20">Juz 16-20</SelectItem>
+                      <SelectItem value="Juz 21-25">Juz 21-25</SelectItem>
+                      <SelectItem value="Juz 26-30">Juz 26-30</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-center sm:justify-end gap-2">
+                  <Button
+                    variant={viewMode === "grid" ? "default" : "outline"}
+                    size="sm"
+                    className="border-gray-200/60 cursor-pointer flex-1 sm:flex-none"
+                    onClick={() => setViewMode("grid")}
+                  >
+                    Grid
+                  </Button>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "outline"}
+                    size="sm"
+                    className="border-gray-200/60 cursor-pointer flex-1 sm:flex-none"
+                    onClick={() => setViewMode("list")}
+                  >
+                    List
+                  </Button>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Stats Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <Card className="border-gray-200/60 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-              <Users className="h-4 w-4 text-blue-500" />
+              <CardTitle className="text-xs sm:text-sm font-medium">Total Students</CardTitle>
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{students.length}</div>
+              <div className="text-lg sm:text-2xl font-bold text-blue-600">{students.length}</div>
               <p className="text-xs text-muted-foreground">Active students</p>
             </CardContent>
           </Card>
 
           <Card className="border-gray-200/60 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Students</CardTitle>
-              <Users className="h-4 w-4 text-green-500" />
+              <CardTitle className="text-xs sm:text-sm font-medium">Active Students</CardTitle>
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-lg sm:text-2xl font-bold text-green-600">
                 {students.filter((s) => s.status === "active").length}
               </div>
               <p className="text-xs text-muted-foreground">Currently active</p>
@@ -504,11 +523,11 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
 
           <Card className="border-gray-200/60 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Inactive Students</CardTitle>
-              <Users className="h-4 w-4 text-red-500" />
+              <CardTitle className="text-xs sm:text-sm font-medium">Inactive Students</CardTitle>
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-600">
+              <div className="text-lg sm:text-2xl font-bold text-red-600">
                 {students.filter((s) => s.status === "inactive").length}
               </div>
               <p className="text-xs text-muted-foreground">Currently inactive</p>
@@ -517,93 +536,79 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
 
           <Card className="border-gray-200/60 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Graduated Students</CardTitle>
-              <Award className="h-4 w-4 text-orange-500" />
+              <CardTitle className="text-xs sm:text-sm font-medium">Graduated Students</CardTitle>
+              <Award className="h-3 w-3 sm:h-4 sm:w-4 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{students.filter((s) => s.status === "graduated").length}</div>
+              <div className="text-lg sm:text-2xl font-bold text-orange-600">{students.filter((s) => s.status === "graduated").length}</div>
               <p className="text-xs text-muted-foreground">Students who completed hifz</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Students Grid/List */}
-        {viewMode === "list" && (
-          <div className="bg-white border border-gray-200/60 rounded-lg p-4 mb-4">
-            <div className="grid grid-cols-4 gap-4 text-sm font-medium text-gray-600">
-              <div className="flex items-center gap-2">
-                <span>Name</span>
-                <Filter className="h-3 w-3" />
-              </div>
-              <div>Juz</div>
-              <div>Progress</div>
-              <div>Status</div>
-            </div>
-          </div>
-        )}
-        
         {viewMode === "grid" ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {filteredStudents.map((student) => (
               <Card key={student.id} className="hover:shadow-md transition-shadow border-gray-200/60 shadow-sm">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <Avatar className="h-12 w-12">
+                      <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
                         <AvatarImage src={student.avatar || "/placeholder.svg"} />
-                        <AvatarFallback>
+                        <AvatarFallback className="text-xs sm:text-sm">
                           {student.name
                             .split(" ")
                             .map((n) => n[0])
                             .join("")}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <CardTitle className="text-lg">{student.name}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{student.class}</p>
+                      <div className="min-w-0 flex-1">
+                        <CardTitle className="text-base sm:text-lg truncate">{student.name}</CardTitle>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{student.class}</p>
                       </div>
                     </div>
                     {getStatusBadge(student.status)}
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 sm:space-y-4">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center gap-2">
-                      <BookOpen className="h-4 w-4 text-blue-500" />
-                      <span>Juz {student.currentJuz}</span>
+                      <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
+                      <span className="text-xs sm:text-sm">Juz {student.currentJuz}</span>
                     </div>
                   </div>
 
                   {/* Additional info preview */}
-                  <div className="space-y-2 pt-2 border-t">
+                  <div className="space-y-2 pt-2 border-t border-t-gray-200/60">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Users className="h-3 w-3" />
-                      <span>{student.fatherName}</span>
+                      <Users className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate">{student.fatherName}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Phone className="h-3 w-3" />
-                      <span>{student.parentPhone.split(" | ")[0]}</span>
+                      <Phone className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate">{student.parentPhone.split(" | ")[0]}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <MapPin className="h-3 w-3" />
-                      <span>
+                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate">
                         {student.birthPlace}, {student.birthDate}
                       </span>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-xs sm:text-sm">
                       <span>Overall Progress</span>
                       <span>{student.progress}%</span>
                     </div>
-                    <Progress value={student.progress} className="h-2" />
+                    <Progress value={student.progress} className="h-1.5 sm:h-2" />
                   </div>
 
                   <div className="flex gap-2 pt-2">
-                    <Button size="sm" className="flex-1 cursor-pointer" onClick={() => handleSelectStudent(student.id)}>
-                      <User className="h-4 w-4 mr-2" />
-                      View Details
+                    <Button size="sm" className="flex-1 cursor-pointer text-xs sm:text-sm" onClick={() => handleSelectStudent(student.id)}>
+                      <User className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                      <span className="hidden sm:inline">View Details</span>
+                      <span className="sm:hidden">Details</span>
                     </Button>
                   </div>
                 </CardContent>
@@ -613,29 +618,29 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
         ) : (
           <Card className="border-gray-200/60 shadow-sm">
             <CardContent className="p-0">
-              <div className="divide-y">
+              <div className="divide-y divide-gray-200/60">
                 {filteredStudents.map((student) => (
-                  <div key={student.id} className="p-4 hover:bg-muted/50 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <Avatar className="h-10 w-10">
+                  <div key={student.id} className="p-3 sm:p-4 hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center justify-center">
+                      <div className="flex items-center space-x-3 sm:space-x-4 min-w-2 flex-1">
+                        <Avatar className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
                           <AvatarImage src={student.avatar || "/placeholder.svg"} />
-                          <AvatarFallback>
+                          <AvatarFallback className="text-xs">
                             {student.name
                               .split(" ")
                               .map((n) => n[0])
                               .join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <h3 className="font-medium">{student.name}</h3>
-                          <p className="text-sm text-muted-foreground">{student.class}</p>
-                          <p className="text-xs text-muted-foreground">{student.fatherName}</p>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-sm sm:text-base font-medium truncate">{student.name}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground">{student.class}</p>
+                          <p className="text-xs text-muted-foreground truncate hidden sm:block">{student.fatherName}</p>
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-6">
-                        <div className="text-center">
+                      <div className="flex items-center justify-center space-x-2 sm:space-x-6">
+                        <div className="text-center hidden sm:block">
                           <div className="text-sm font-medium">Juz {student.currentJuz}</div>
                           <div className="text-xs text-muted-foreground">Current</div>
                         </div>
@@ -643,16 +648,24 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
                           <div className="text-sm font-medium">{student.progress}%</div>
                           <div className="text-xs text-muted-foreground">Progress</div>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center hidden md:block">
                           <div className="text-xs font-medium">{student.birthPlace}</div>
                           <div className="text-xs text-muted-foreground">{student.birthDate}</div>
                         </div>
                         <div className="flex items-center space-x-2">
                           {getStatusBadge(student.status)}
-                          <Button size="sm" variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => handleSelectStudent(student.id)}>
-                            <User className="h-4 w-4" />
+                          <Button size="sm" variant="outline" className="border-gray-200/60 cursor-pointer p-1 sm:p-2" onClick={() => handleSelectStudent(student.id)}>
+                            <User className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                         </div>
+                      </div>
+                    </div>
+                    
+                    {/* Mobile-only additional info */}
+                    <div className="mt-2 sm:hidden">
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Juz {student.currentJuz}</span>
+                        <span>{student.birthPlace}</span>
                       </div>
                     </div>
                   </div>
@@ -664,10 +677,10 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
 
         {filteredStudents.length === 0 && (
           <Card className="border-gray-200/60 shadow-sm">
-            <CardContent className="text-center py-12">
-              <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">No students found</h3>
-              <p className="text-muted-foreground">Try changing your filters or search keywords</p>
+            <CardContent className="text-center py-8 sm:py-12">
+              <User className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-base sm:text-lg font-medium mb-2">No students found</h3>
+              <p className="text-sm text-muted-foreground">Try changing your filters or search keywords</p>
             </CardContent>
           </Card>
         )}
