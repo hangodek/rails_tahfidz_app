@@ -1,34 +1,22 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
-  Mic,
-  Play,
-  Pause,
-  Square,
-  Save,
-  ArrowLeft,
-  Plus,
   BookOpen,
   Star,
   Calendar,
   Award,
   Volume2,
-  Download,
-  Database,
-  CheckCircle,
-  Users,
 } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
-import { router } from "@inertiajs/react"
+import {
+  TeacherHeader,
+  StudentSelection,
+  VoiceRecording,
+  SavedRecordings,
+  ActivityForm,
+  RecentActivities,
+} from "./components"
 
 // Audio storage utility
 class AudioStorage {
@@ -503,363 +491,60 @@ export default function TeacherIndex({}: TeacherIndexProps) {
     <div className="min-h-screen bg-gray-50/50">
       <div className="flex flex-col space-y-4 sm:space-y-6 p-4 sm:p-6">
         {/* Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Hidz Dashboard</h1>
-            <p className="text-sm sm:text-base text-muted-foreground">Monitor and analyze student Quran memorization progress</p>
-          </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
-            <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/students")}>
-              <Users className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">View All Students</span>
-              <span className="sm:hidden">Students</span>
-            </Button>
-            <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/dashboard")}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
-              <span className="sm:hidden">Back</span>
-            </Button>
-          </div>
-        </div>
+        <TeacherHeader />
 
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
           {/* Student Selection & Recording */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Student Selection */}
-            <Card className="border-gray-200/60 shadow-lg">
-              <CardHeader>
-                <CardTitle>Select Student</CardTitle>
-                <CardDescription>Choose student for memorization session</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Select value={selectedStudent} onValueChange={setSelectedStudent}>
-                  <SelectTrigger className="border-gray-200/60 cursor-pointer">
-                    <SelectValue placeholder="Select student..." />
-                  </SelectTrigger>
-                  <SelectContent className="border-gray-200/60">
-                    {students.map((student) => (
-                      <SelectItem key={student.id} value={student.id} className="cursor-pointer">
-                        <div className="flex gap-2 items-centerspace-x-2 sm:space-x-3">
-                          <Avatar className="h-5 w-5 sm:h-6 sm:w-6">
-                            <AvatarImage src={student.avatar || "/placeholder.svg"} />
-                            <AvatarFallback className="text-xs">
-                              {student.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <span className="font-medium text-sm sm:text-base">{student.name}</span>
-                            <span className="text-xs sm:text-sm text-muted-foreground ml-1 sm:ml-2">
-                              {student.class} - Juz {student.currentJuz}
-                            </span>
-                          </div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {currentStudent && (
-                  <div className="mt-4 p-3 sm:p-4 bg-blue-50 rounded-lg">
-                    <div className="flex items-center space-x-2 sm:space-x-3">
-                      <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
-                        <AvatarImage src={currentStudent.avatar || "/placeholder.svg"} />
-                        <AvatarFallback>
-                          {currentStudent.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h3 className="text-sm sm:text-base font-semibold">{currentStudent.name}</h3>
-                        <p className="text-xs sm:text-sm text-muted-foreground">{currentStudent.class}</p>
-                        <Badge variant="secondary" className="text-xs">Juz {currentStudent.currentJuz}</Badge>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <StudentSelection
+              students={students}
+              selectedStudent={selectedStudent}
+              setSelectedStudent={setSelectedStudent}
+              currentStudent={currentStudent}
+            />
 
             {/* Voice Recording */}
-            <Card className="border-gray-200/60 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mic className="h-5 w-5" />
-                  Voice Recording
-                  {isSaved && <CheckCircle className="h-5 w-5 text-green-500" />}
-                </CardTitle>
-                <CardDescription>Record student voice during memorization session {isSaved && "- Saved to database"}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-center space-x-3 sm:space-x-4">
-                  {!isRecording ? (
-                    <Button
-                      onClick={startRecording}
-                      disabled={!selectedStudent}
-                      size="lg"
-                      className="bg-red-500 hover:bg-red-600 cursor-pointer text-sm sm:text-base"
-                    >
-                      <Mic className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                      <span className="hidden sm:inline">Start Recording</span>
-                      <span className="sm:hidden">Record</span>
-                    </Button>
-                  ) : (
-                    <div className="flex space-x-2">
-                      <Button onClick={pauseRecording} variant="outline" size="lg" className="cursor-pointer border-gray-200/60">
-                        {isPaused ? <Play className="h-4 w-4 sm:h-5 sm:w-5" /> : <Pause className="h-4 w-4 sm:h-5 sm:w-5" />}
-                      </Button>
-                      <Button onClick={stopRecording} variant="outline" size="lg" className="cursor-pointer border-gray-200/60">
-                        <Square className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-
-                {isRecording && (
-                  <div className="text-center">
-                    <div className="text-xl sm:text-2xl font-mono font-bold text-red-500">{formatTime(recordingTime)}</div>
-                    <div className="flex items-center justify-center space-x-2 mt-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs sm:text-sm text-muted-foreground">{isPaused ? "Paused" : "Recording..."}</span>
-                    </div>
-                  </div>
-                )}
-
-                {audioUrl && (
-                  <div className="space-y-3">
-                    <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4">
-                      <Button onClick={playAudio} variant="outline" className="cursor-pointer border-gray-200/60">
-                        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                      </Button>
-                      <span className="text-xs sm:text-sm text-muted-foreground">Duration: {formatTime(recordingTime)}</span>
-                      <Button onClick={downloadAudio} variant="outline" size="sm" className="cursor-pointer border-gray-200/60">
-                        <Download className="h-4 w-4" />
-                      </Button>
-                      {!isSaved && (
-                        <Badge variant="outline" className="text-orange-600">
-                          <Database className="h-3 w-3 mr-1" />
-                          <span className="hidden sm:inline">Not Saved</span>
-                          <span className="sm:hidden">Unsaved</span>
-                        </Badge>
-                      )}
-                    </div>
-                    <audio ref={audioRef} src={audioUrl} onEnded={() => setIsPlaying(false)} className="hidden" />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <VoiceRecording
+              selectedStudent={selectedStudent}
+              isRecording={isRecording}
+              isPaused={isPaused}
+              recordingTime={recordingTime}
+              audioUrl={audioUrl}
+              isPlaying={isPlaying}
+              isSaved={isSaved}
+              startRecording={startRecording}
+              pauseRecording={pauseRecording}
+              stopRecording={stopRecording}
+              playAudio={playAudio}
+              downloadAudio={downloadAudio}
+              formatTime={formatTime}
+            />
 
             {/* Saved Recordings */}
-            {savedRecordings.length > 0 && (
-              <Card className="border-gray-200/60 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Database className="h-5 w-5" />
-                    Saved Recordings
-                  </CardTitle>
-                  <CardDescription>Latest 5 saved recordings</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {savedRecordings.map((recording, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
-                        <Avatar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
-                          <AvatarFallback className="text-xs">
-                            {recording.studentName
-                              .split(" ")
-                              .map((n: string) => n[0])
-                              .join("")}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs sm:text-sm font-medium truncate">{recording.studentName}</p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {recording.activityType} - {formatTime(recording.duration)}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-xs text-muted-foreground flex-shrink-0">{recording.date}</div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
+            <SavedRecordings
+              savedRecordings={savedRecordings}
+              formatTime={formatTime}
+            />
           </div>
 
           {/* Activity Form */}
           <div className="space-y-4 sm:space-y-6">
-            <Card className="border-gray-200/60 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Plus className="h-5 w-5" />
-                  Add Activity
-                </CardTitle>
-                <CardDescription>Record student memorization activity</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Activity Type</Label>
-                  <Select value={activityType} onValueChange={setActivityType}>
-                    <SelectTrigger className="border-gray-200/60 cursor-pointer">
-                      <SelectValue placeholder="Select activity type..." />
-                    </SelectTrigger>
-                    <SelectContent className="border-gray-200/60">
-                      {activityTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value} className="cursor-pointer">
-                          <div className="flex items-center space-x-2">
-                            <div className={`w-3 h-3 rounded-full ${type.color}`}></div>
-                            <span>{type.label}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {activityType && (
-                  <>
-                    {(activityType === "setoran_baru" ||
-                      activityType === "muroja" ||
-                      activityType === "menyelesaikan_ayat") && (
-                      <>
-                        <div className="space-y-2">
-                          <Label>Surah</Label>
-                          <Select
-                            value={activityDetails.surah}
-                            onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, surah: value }))}
-                          >
-                            <SelectTrigger className="border-gray-200/60 cursor-pointer">
-                              <SelectValue placeholder="Select surah..." />
-                            </SelectTrigger>
-                            <SelectContent className="border-gray-200/60">
-                              {surahList.map((surah, index) => (
-                                <SelectItem key={index} value={surah} className="cursor-pointer">
-                                  {index + 1}. {surah}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="space-y-2">
-                            <Label className="text-xs sm:text-sm">Verse From</Label>
-                            <Input
-                              type="number"
-                              placeholder="1"
-                              value={activityDetails.ayatFrom}
-                              onChange={(e) => setActivityDetails((prev) => ({ ...prev, ayatFrom: e.target.value }))}
-                              className="border-gray-200/60 text-sm"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label className="text-xs sm:text-sm">Verse To</Label>
-                            <Input
-                              type="number"
-                              placeholder="10"
-                              value={activityDetails.ayatTo}
-                              onChange={(e) => setActivityDetails((prev) => ({ ...prev, ayatTo: e.target.value }))}
-                              className="border-gray-200/60 text-sm"
-                            />
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    {activityType === "menyelesaikan_juz" && (
-                      <div className="space-y-2">
-                        <Label>Juz</Label>
-                        <Select
-                          value={activityDetails.juz}
-                          onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, juz: value }))}
-                        >
-                          <SelectTrigger className="border-gray-200/60">
-                            <SelectValue placeholder="Select juz..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 30 }, (_, i) => (
-                              <SelectItem key={i + 1} value={(i + 1).toString()}>
-                                Juz {i + 1}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-
-                    <div className="space-y-2">
-                      <Label>Notes</Label>
-                      <Textarea
-                        placeholder="Add notes about this activity..."
-                        value={activityDetails.notes}
-                        onChange={(e) => setActivityDetails((prev) => ({ ...prev, notes: e.target.value }))}
-                        className="border-gray-200/60"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Evaluation</Label>
-                      <Select
-                        value={activityDetails.evaluation}
-                        onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, evaluation: value }))}
-                      >
-                        <SelectTrigger className="border-gray-200/60 cursor-pointer">
-                          <SelectValue placeholder="Select evaluation..." />
-                        </SelectTrigger>
-                        <SelectContent className="border-gray-200/60">
-                          <SelectItem value="sangat_baik" className="cursor-pointer">Excellent</SelectItem>
-                          <SelectItem value="baik" className="cursor-pointer">Good</SelectItem>
-                          <SelectItem value="cukup" className="cursor-pointer">Fair</SelectItem>
-                          <SelectItem value="perlu_perbaikan" className="cursor-pointer">Needs Improvement</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <Button onClick={handleSaveActivity} className="w-full cursor-pointer text-sm sm:text-base">
-                      <Save className="h-4 w-4 mr-2" />
-                      <span className="hidden sm:inline">Save Activity</span>
-                      <span className="sm:hidden">Save</span>
-                    </Button>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+            <ActivityForm
+              activityType={activityType}
+              setActivityType={setActivityType}
+              activityTypes={activityTypes}
+              surahList={surahList}
+              activityDetails={activityDetails}
+              setActivityDetails={setActivityDetails}
+              handleSaveActivity={handleSaveActivity}
+            />
 
             {/* Recent Activities for Selected Student */}
-            {currentStudent && (
-              <Card className="border-gray-200/60 shadow-lg">
-                <CardHeader>
-                  <CardTitle>Recent Activities</CardTitle>
-                  <CardDescription>{currentStudent.name}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {[
-                    { type: "setoran_baru", activity: "New Submission Al-Baqarah 1-10", time: "2 hours ago" },
-                    { type: "muroja", activity: "Murajaah Ali Imran 50-75", time: "1 day ago" },
-                    { type: "menyelesaikan_juz", activity: "Completed Juz 14", time: "3 days ago" },
-                  ].map((activity, index) => {
-                    const activityType = activityTypes.find((t) => t.value === activity.type)
-                    return (
-                      <div key={index} className="flex items-start space-x-2 sm:space-x-3">
-                        <div
-                          className={`flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full text-white text-xs ${activityType?.color}`}
-                        >
-                          {activityType && <activityType.icon className="h-3 w-3 sm:h-4 sm:w-4" />}
-                        </div>
-                        <div className="flex-1 space-y-1 min-w-0">
-                          <p className="text-xs sm:text-sm font-medium truncate">{activity.activity}</p>
-                          <p className="text-xs text-muted-foreground">{activity.time}</p>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </CardContent>
-              </Card>
-            )}
+            <RecentActivities
+              currentStudent={currentStudent}
+              activityTypes={activityTypes}
+            />
           </div>
         </div>
       </div>
