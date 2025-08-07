@@ -46,11 +46,11 @@ export function JuzDistributionChart() {
               ))}
             </Pie>
             <Tooltip 
-              labelStyle={{ fontSize: '14px' }}
-              contentStyle={{ fontSize: '14px' }}
+              labelStyle={{ fontSize: '13px' }}
+              contentStyle={{ fontSize: '13px' }}
             />
             <Legend 
-              wrapperStyle={{ fontSize: '14px' }}
+              wrapperStyle={{ fontSize: '13px' }}
             />
           </PieChart>
         </ResponsiveContainer>
