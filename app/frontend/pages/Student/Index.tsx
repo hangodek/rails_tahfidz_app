@@ -640,15 +640,15 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
                       </div>
 
                       <div className="flex items-center justify-center space-x-2 sm:space-x-6">
-                        <div className="text-center hidden sm:block">
+                        <div className="text-center hidden sm:block w-16">
                           <div className="text-sm font-medium">Juz {student.currentJuz}</div>
                           <div className="text-xs text-muted-foreground">Current</div>
                         </div>
-                        <div className="text-center">
+                        <div className="text-center w-16">
                           <div className="text-sm font-medium">{student.progress}%</div>
                           <div className="text-xs text-muted-foreground">Progress</div>
                         </div>
-                        <div className="text-center hidden md:block">
+                        <div className="text-center hidden md:block w-24">
                           <div className="text-xs font-medium">{student.birthPlace}</div>
                           <div className="text-xs text-muted-foreground">{student.birthDate}</div>
                         </div>
@@ -664,8 +664,8 @@ export default function StudentsIndex({ students = allStudents }: StudentsIndexP
                     {/* Mobile-only additional info */}
                     <div className="mt-2 sm:hidden">
                       <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>Juz {student.currentJuz}</span>
-                        <span>{student.birthPlace}</span>
+                        <span className="w-16 text-left">Juz {student.currentJuz}</span>
+                        <span className="w-24 text-right">{student.birthPlace}</span>
                       </div>
                     </div>
                   </div>
