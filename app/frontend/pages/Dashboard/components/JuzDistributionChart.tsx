@@ -21,7 +21,7 @@ const juzDistribution = [
 
 export function JuzDistributionChart() {
   return (
-    <Card className="border-gray-200/60 shadow-lg">
+    <Card className="border-gray-200/60 shadow-lg ">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BookOpen className="h-5 w-5" />
@@ -50,7 +50,7 @@ export function JuzDistributionChart() {
               contentStyle={{ fontSize: '13px' }}
             />
             <Legend 
-              wrapperStyle={{ fontSize: '13px' }}
+              wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }}
             />
           </PieChart>
         </ResponsiveContainer>
