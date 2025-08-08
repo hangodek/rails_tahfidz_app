@@ -53,12 +53,12 @@ export default function CreateStudent() {
   const validateForm = (): boolean => {
     const newErrors: Partial<StudentFormData> = {}
 
-    if (!formData.name.trim()) newErrors.name = "Nama siswa wajib diisi"
-    if (!formData.birth_date) newErrors.birth_date = "Tanggal lahir wajib diisi"
-    if (!formData.address.trim()) newErrors.address = "Alamat wajib diisi"
-    if (!formData.father_name.trim()) newErrors.father_name = "Nama ayah wajib diisi"
-    if (!formData.mother_name.trim()) newErrors.mother_name = "Nama ibu wajib diisi"
-    if (!formData.date_joined) newErrors.date_joined = "Tanggal bergabung wajib diisi"
+    if (!formData.name.trim()) newErrors.name = "Student name is required"
+    if (!formData.birth_date) newErrors.birth_date = "Date of birth is required"
+    if (!formData.address.trim()) newErrors.address = "Address is required"
+    if (!formData.father_name.trim()) newErrors.father_name = "Father's name is required"
+    if (!formData.mother_name.trim()) newErrors.mother_name = "Mother's name is required"
+    if (!formData.date_joined) newErrors.date_joined = "Date joined is required"
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
