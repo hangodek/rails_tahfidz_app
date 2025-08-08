@@ -2,35 +2,50 @@
 
 import { useState } from "react"
 import { router } from "@inertiajs/react"
-import {
-  StudentFormHeader,
-  StudentInformationForm,
-  ParentInformationForm,
-  ProgramInformationForm,
-  StudentFormActions,
-} from "./components"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { ArrowLeft, Save } from "lucide-react"
+import { NewStudentForm } from "./components/NewStudentForm"
 
 interface StudentFormData {
   name: string
+  current_hifz_in_juz: string
+  current_hifz_in_pages: string
+  avatar: File | null
+  class: string
+  phone: string
+  email: string
+  status: string
+  gender: string
+  birthPlace: string
+  birthDate: string
   address: string
-  birth_date: string
-  mother_name: string
-  father_name: string
-  date_joined: string
-  hifz_in_juz: string
-  hifz_in_page: string
+  fatherName: string
+  motherName: string
+  fatherPhone: string
+  motherPhone: string
+  dateJoined: string
 }
 
 export default function CreateStudent() {
   const [formData, setFormData] = useState<StudentFormData>({
     name: "",
+    current_hifz_in_juz: "0",
+    current_hifz_in_pages: "0",
+    avatar: null,
+    class: "",
+    phone: "",
+    email: "",
+    status: "active",
+    gender: "",
+    birthPlace: "",
+    birthDate: "",
     address: "",
-    birth_date: "",
-    mother_name: "",
-    father_name: "",
-    date_joined: "",
-    hifz_in_juz: "0",
-    hifz_in_page: "0",
+    fatherName: "",
+    motherName: "",
+    fatherPhone: "",
+    motherPhone: "",
+    dateJoined: "",
   })
 
   const [errors, setErrors] = useState<Partial<StudentFormData>>({})
@@ -50,15 +65,41 @@ export default function CreateStudent() {
     }
   }
 
+  const handleFileChange = (file: File | null) => {
+    setFormData(prev => ({
+      ...prev,
+      avatar: file
+    }))
+    // Clear error when file is selected
+    if (errors.avatar) {
+      setErrors(prev => ({
+        ...prev,
+        avatar: undefined
+      }))
+    }
+  }
+
   const validateForm = (): boolean => {
     const newErrors: Partial<StudentFormData> = {}
 
     if (!formData.name.trim()) newErrors.name = "Student name is required"
-    if (!formData.birth_date) newErrors.birth_date = "Date of birth is required"
+    if (!formData.birthDate) newErrors.birthDate = "Date of birth is required"
+    if (!formData.birthPlace.trim()) newErrors.birthPlace = "Place of birth is required"
     if (!formData.address.trim()) newErrors.address = "Address is required"
-    if (!formData.father_name.trim()) newErrors.father_name = "Father's name is required"
-    if (!formData.mother_name.trim()) newErrors.mother_name = "Mother's name is required"
-    if (!formData.date_joined) newErrors.date_joined = "Date joined is required"
+    if (!formData.phone.trim()) newErrors.phone = "Phone number is required"
+    if (!formData.email.trim()) newErrors.email = "Email is required"
+    if (!formData.class) newErrors.class = "Class is required"
+    if (!formData.gender) newErrors.gender = "Gender is required"
+    if (!formData.fatherName.trim()) newErrors.fatherName = "Father's name is required"
+    if (!formData.motherName.trim()) newErrors.motherName = "Mother's name is required"
+    if (!formData.fatherPhone.trim()) newErrors.fatherPhone = "Father's phone is required"
+    if (!formData.motherPhone.trim()) newErrors.motherPhone = "Mother's phone is required"
+    if (!formData.dateJoined) newErrors.dateJoined = "Date joined is required"
+
+    // Email validation
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email format"
+    }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -74,51 +115,100 @@ export default function CreateStudent() {
     setIsSubmitting(true)
     
     try {
-      // Convert string values to appropriate types for Rails
-      const studentData = {
-        ...formData,
-        hifz_in_juz: parseInt(formData.hifz_in_juz) || 0,
-        hifz_in_page: parseInt(formData.hifz_in_page) || 0,
+      // Create FormData for file upload
+      const formDataToSend = new FormData()
+      
+      // Add all form fields
+      formDataToSend.append('student[name]', formData.name)
+      formDataToSend.append('student[current_hifz_in_juz]', formData.current_hifz_in_juz)
+      formDataToSend.append('student[current_hifz_in_pages]', formData.current_hifz_in_pages)
+      formDataToSend.append('student[class]', formData.class)
+      formDataToSend.append('student[phone]', formData.phone)
+      formDataToSend.append('student[email]', formData.email)
+      formDataToSend.append('student[status]', formData.status)
+      formDataToSend.append('student[gender]', formData.gender)
+      formDataToSend.append('student[birthPlace]', formData.birthPlace)
+      formDataToSend.append('student[birthDate]', formData.birthDate)
+      formDataToSend.append('student[address]', formData.address)
+      formDataToSend.append('student[fatherName]', formData.fatherName)
+      formDataToSend.append('student[motherName]', formData.motherName)
+      formDataToSend.append('student[fatherPhone]', formData.fatherPhone)
+      formDataToSend.append('student[motherPhone]', formData.motherPhone)
+      formDataToSend.append('student[dateJoined]', formData.dateJoined)
+      
+      // Add avatar file if selected
+      if (formData.avatar) {
+        formDataToSend.append('student[avatar]', formData.avatar)
       }
       
-      router.post('/students', { student: studentData })
+      router.post('/students', formDataToSend, {
+        forceFormData: true
+      })
     } catch (error) {
       console.error('Error creating student:', error)
       setIsSubmitting(false)
     }
   }
 
+  const handleBackClick = () => {
+    router.visit('/students')
+  }
+
   return (
     <div className="min-h-screen bg-gray-50/50">
       <div className="flex flex-col space-y-4 sm:space-y-6 p-4 sm:p-6">
         {/* Header */}
-        <StudentFormHeader />
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Add New Student</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Create a new student profile and add to the system</p>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
+            <Button
+              variant="outline"
+              className="border-gray-200/60 cursor-pointer"
+              onClick={handleBackClick}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Back to Students</span>
+              <span className="sm:hidden">Back</span>
+            </Button>
+          </div>
+        </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Student Information */}
-          <StudentInformationForm
+          <NewStudentForm
             formData={formData}
             errors={errors}
             handleInputChange={handleInputChange}
+            handleFileChange={handleFileChange}
           />
 
-          {/* Parent Information */}
-          <ParentInformationForm
-            formData={formData}
-            errors={errors}
-            handleInputChange={handleInputChange}
-          />
-
-          {/* Program Information */}
-          <ProgramInformationForm
-            formData={formData}
-            errors={errors}
-            handleInputChange={handleInputChange}
-          />
-
-          {/* Submit Button */}
-          <StudentFormActions isSubmitting={isSubmitting} />
+          {/* Submit Actions */}
+          <Card className="border-gray-200/60 shadow-lg">
+            <CardContent className="pt-6">
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="cursor-pointer border-gray-200/60"
+                  onClick={handleBackClick}
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <Save className="h-4 w-4" />
+                  {isSubmitting ? "Creating..." : "Create Student"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </form>
       </div>
     </div>
