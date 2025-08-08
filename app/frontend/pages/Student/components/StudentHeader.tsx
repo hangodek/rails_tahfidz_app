@@ -10,7 +10,11 @@ export function StudentHeader() {
         <p className="text-sm sm:text-base text-muted-foreground">Manage and monitor Quran memorization student data</p>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
-        <Button variant="outline" className="border-gray-200/60 cursor-pointer">
+        <Button 
+          variant="outline" 
+          className="border-gray-200/60 cursor-pointer"
+          onClick={() => router.visit("/students/new")}
+        >
           <Plus className="h-4 w-4 mr-2" />
           <span className="hidden sm:inline">Add Student</span>
           <span className="sm:hidden">Add</span>
