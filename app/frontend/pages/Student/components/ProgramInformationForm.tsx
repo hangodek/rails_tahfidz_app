@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { DatePicker } from "@/components/ui/date-picker"
 import { Target } from "lucide-react"
 
 interface StudentFormData {
@@ -21,6 +22,21 @@ interface ProgramInformationFormProps {
 }
 
 export function ProgramInformationForm({ formData, errors, handleInputChange }: ProgramInformationFormProps) {
+  const handleDateJoinedChange = (date: Date | undefined) => {
+    if (date) {
+      // Use local date formatting to avoid timezone issues
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      const formattedDate = `${year}-${month}-${day}`
+      handleInputChange("date_joined", formattedDate)
+    } else {
+      handleInputChange("date_joined", "")
+    }
+  }
+
+  const selectedDateJoined = formData.date_joined ? new Date(formData.date_joined + 'T12:00:00') : undefined
+
   return (
     <Card className="border-gray-200/60 shadow-lg">
       <CardHeader>
@@ -36,12 +52,12 @@ export function ProgramInformationForm({ formData, errors, handleInputChange }: 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="date_joined">Date Joined *</Label>
-            <Input
+            <DatePicker
               id="date_joined"
-              type="date"
-              value={formData.date_joined}
-              onChange={(e) => handleInputChange("date_joined", e.target.value)}
-              className={errors.date_joined ? "border-red-500" : ""}
+              date={selectedDateJoined}
+              onDateChange={handleDateJoinedChange}
+              placeholder="Select date joined"
+              className={`cursor-pointer border-gray-200/60 ${errors.date_joined ? "border-red-500" : ""}`}
             />
             {errors.date_joined && <p className="text-sm text-red-500">{errors.date_joined}</p>}
           </div>
@@ -66,12 +82,12 @@ export function ProgramInformationForm({ formData, errors, handleInputChange }: 
               id="hifz_in_page"
               type="number"
               min="0"
-              max="20"
+              max="604"
               value={formData.hifz_in_page}
               onChange={(e) => handleInputChange("hifz_in_page", e.target.value)}
               placeholder="0"
             />
-            <p className="text-xs text-muted-foreground">Enter current page in ongoing Juz (0-20)</p>
+            <p className="text-xs text-muted-foreground">Enter current page in ongoing Juz (0-604)</p>
           </div>
         </div>
       </CardContent>

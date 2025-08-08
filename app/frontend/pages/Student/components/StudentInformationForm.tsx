@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { DatePicker } from "@/components/ui/date-picker"
 import { User } from "lucide-react"
 
 interface StudentFormData {
@@ -22,6 +23,21 @@ interface StudentInformationFormProps {
 }
 
 export function StudentInformationForm({ formData, errors, handleInputChange }: StudentInformationFormProps) {
+  const handleDateChange = (date: Date | undefined) => {
+    if (date) {
+      // Use local date formatting to avoid timezone issues
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      const formattedDate = `${year}-${month}-${day}`
+      handleInputChange("birth_date", formattedDate)
+    } else {
+      handleInputChange("birth_date", "")
+    }
+  }
+
+  const selectedDate = formData.birth_date ? new Date(formData.birth_date + 'T12:00:00') : undefined
+
   return (
     <Card className="border-gray-200/60 shadow-lg">
       <CardHeader>
@@ -49,12 +65,12 @@ export function StudentInformationForm({ formData, errors, handleInputChange }: 
 
           <div className="space-y-2">
             <Label htmlFor="birth_date">Date of Birth *</Label>
-            <Input
+            <DatePicker
               id="birth_date"
-              type="date"
-              value={formData.birth_date}
-              onChange={(e) => handleInputChange("birth_date", e.target.value)}
-              className={errors.birth_date ? "border-red-500" : ""}
+              date={selectedDate}
+              onDateChange={handleDateChange}
+              placeholder="Select date of birth"
+              className={`cursor-pointer border-gray-300/60 ${errors.birth_date ? "border-red-500" : ""}`}
             />
             {errors.birth_date && <p className="text-sm text-red-500">{errors.birth_date}</p>}
           </div>
