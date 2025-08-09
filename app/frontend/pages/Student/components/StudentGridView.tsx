@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Progress } from "@/components/ui/progress"
 import {
@@ -15,15 +14,24 @@ import { ReactElement } from "react"
 interface Student {
   id: string
   name: string
-  currentJuz: number
-  progress: number
-  avatar: string
-  class: string
+  current_hifz_in_juz: string
+  current_hifz_in_pages: string
+  avatar?: string
+  class_level: string
+  phone?: string
+  email?: string
   status: string
-  fatherName: string
-  parentPhone: string
-  birthPlace: string
-  birthDate: string
+  gender: string
+  birth_place: string
+  birth_date: string
+  address?: string
+  father_name: string
+  mother_name: string
+  father_phone?: string
+  mother_phone?: string
+  date_joined: string
+  created_at: string
+  updated_at: string
 }
 
 interface StudentGridViewProps {
@@ -51,7 +59,7 @@ export function StudentGridView({ filteredStudents, getStatusBadge, handleSelect
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <CardTitle className="text-base sm:text-lg truncate">{student.name}</CardTitle>
-                  <p className="text-xs sm:text-sm text-muted-foreground">{student.class}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{student.class_level}</p>
                 </div>
               </div>
               {getStatusBadge(student.status)}
@@ -61,7 +69,7 @@ export function StudentGridView({ filteredStudents, getStatusBadge, handleSelect
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
-                <span className="text-xs sm:text-sm">Juz {student.currentJuz}</span>
+                <span className="text-xs sm:text-sm">Juz {student.current_hifz_in_juz}</span>
               </div>
             </div>
 
@@ -69,16 +77,22 @@ export function StudentGridView({ filteredStudents, getStatusBadge, handleSelect
             <div className="space-y-2 pt-2 border-t border-t-gray-200/60">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Users className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">{student.fatherName}</span>
+                <span className="truncate">
+                  {student.father_name ? `${student.father_name} (Father)` : 
+                  student.mother_name ? `${student.mother_name} (Mother)` : 'No parent info'}
+                </span>
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Phone className="h-3 w-3 flex-shrink-0" />
-                <span className="truncate">{student.parentPhone.split(" | ")[0]}</span>
+                <span className="truncate">
+                  {student.father_phone ? `${student.father_phone} (Father)` :
+                  student.mother_phone ? `${student.mother_phone} (Mother)` : 'No phone'}
+                </span>
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <MapPin className="h-3 w-3 flex-shrink-0" />
                 <span className="truncate">
-                  {student.birthPlace}, {student.birthDate}
+                  {student.birth_place}, {student.birth_date}
                 </span>
               </div>
             </div>
@@ -86,9 +100,9 @@ export function StudentGridView({ filteredStudents, getStatusBadge, handleSelect
             <div className="space-y-2">
               <div className="flex justify-between text-xs sm:text-sm">
                 <span>Overall Progress</span>
-                <span>{student.progress}%</span>
+                <span>{Math.round((parseInt(student.current_hifz_in_juz) || 0) / 30 * 100)}%</span>
               </div>
-              <Progress value={student.progress} className="h-1.5 sm:h-2" />
+              <Progress value={Math.round((parseInt(student.current_hifz_in_juz) || 0) / 30 * 100)} className="h-1.5 sm:h-2" />
             </div>
 
             <div className="flex gap-2 pt-2">

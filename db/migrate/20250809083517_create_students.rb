@@ -4,7 +4,6 @@ class CreateStudents < ActiveRecord::Migration[8.0]
       t.string :name, null: false
       t.string :current_hifz_in_juz, null: false
       t.string :current_hifz_in_pages, null: false
-      t.string :avatar
       t.string :class_level, null: false
       t.string :phone
       t.string :email

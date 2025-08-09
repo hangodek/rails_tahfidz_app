@@ -7,14 +7,24 @@ import { ReactElement } from "react"
 interface Student {
   id: string
   name: string
-  currentJuz: number
-  progress: number
-  avatar: string
-  class: string
+  current_hifz_in_juz: string
+  current_hifz_in_pages: string
+  avatar?: string
+  class_level: string
+  phone?: string
+  email?: string
   status: string
-  fatherName: string
-  birthPlace: string
-  birthDate: string
+  gender: string
+  birth_place: string
+  birth_date: string
+  address?: string
+  father_name: string
+  mother_name: string
+  father_phone?: string
+  mother_phone?: string
+  date_joined: string
+  created_at: string
+  updated_at: string
 }
 
 interface StudentListViewProps {
@@ -43,23 +53,25 @@ export function StudentListView({ filteredStudents, getStatusBadge, handleSelect
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <h3 className="text-sm sm:text-base font-medium truncate">{student.name}</h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground">{student.class}</p>
-                    <p className="text-xs text-muted-foreground truncate hidden sm:block">{student.fatherName}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{student.class_level}</p>
+                    <p className="text-xs text-muted-foreground truncate hidden sm:block">
+                      {student.father_name || student.mother_name || 'No parent info'}
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-center space-x-2 sm:space-x-6">
                   <div className="text-center hidden sm:block w-16">
-                    <div className="text-sm font-medium">Juz {student.currentJuz}</div>
+                    <div className="text-sm font-medium">Juz {student.current_hifz_in_juz}</div>
                     <div className="text-xs text-muted-foreground">Current</div>
                   </div>
                   <div className="text-center w-16">
-                    <div className="text-sm font-medium">{student.progress}%</div>
+                    <div className="text-sm font-medium">{Math.round((parseInt(student.current_hifz_in_juz) || 0) / 30 * 100)}%</div>
                     <div className="text-xs text-muted-foreground">Progress</div>
                   </div>
                   <div className="text-center hidden md:block w-24">
-                    <div className="text-xs font-medium">{student.birthPlace}</div>
-                    <div className="text-xs text-muted-foreground">{student.birthDate}</div>
+                    <div className="text-xs font-medium">{student.birth_place}</div>
+                    <div className="text-xs text-muted-foreground">{student.birth_date}</div>
                   </div>
                   <div className="flex items-center space-x-2">
                     {getStatusBadge(student.status)}
@@ -73,8 +85,8 @@ export function StudentListView({ filteredStudents, getStatusBadge, handleSelect
               {/* Mobile-only additional info */}
               <div className="mt-2 sm:hidden">
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span className="w-16 text-left">Juz {student.currentJuz}</span>
-                  <span className="w-24 text-right">{student.birthPlace}</span>
+                  <span className="w-16 text-left">Juz {student.current_hifz_in_juz}</span>
+                  <span className="w-24 text-right">{student.birth_place}</span>
                 </div>
               </div>
             </div>

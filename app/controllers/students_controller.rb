@@ -1,6 +1,8 @@
 class StudentsController < ApplicationController
   def index
-    render inertia: "Student/Index"
+    render inertia: "Student/Index", props: {
+      students: Student.all
+    }
   end
 
   def show
