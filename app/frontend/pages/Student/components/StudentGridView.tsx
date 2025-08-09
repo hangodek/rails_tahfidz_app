@@ -54,7 +54,8 @@ export function StudentGridView({ filteredStudents, getStatusBadge, handleSelect
                     {student.name
                       .split(" ")
                       .map((n) => n[0])
-                      .join("")}
+                      .join("")
+                      .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">

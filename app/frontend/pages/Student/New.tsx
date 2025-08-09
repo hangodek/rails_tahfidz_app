@@ -118,7 +118,7 @@ export default function CreateStudent() {
       const formDataToSend = new FormData()
       
       // Add all form fields
-      formDataToSend.append('student[name]', formData.name)
+      formDataToSend.append('student[name]', formData.name.charAt(0).toUpperCase() + formData.name.slice(1))
       formDataToSend.append('student[current_hifz_in_juz]', formData.current_hifz_in_juz)
       formDataToSend.append('student[current_hifz_in_pages]', formData.current_hifz_in_pages)
       formDataToSend.append('student[class_level]', formData.class_level)
