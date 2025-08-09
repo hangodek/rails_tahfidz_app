@@ -1,7 +1,13 @@
 class StudentsController < ApplicationController
   def index
+    students = Student.all.map do |student|
+      student.as_json.merge(
+        avatar: student.avatar.attached? ? url_for(student.avatar) : nil
+      )
+    end
+
     render inertia: "Student/Index", props: {
-      students: Student.all
+      students: students
     }
   end
 
