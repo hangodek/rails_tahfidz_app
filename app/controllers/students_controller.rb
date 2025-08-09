@@ -17,7 +17,7 @@ class StudentsController < ApplicationController
     if @student.save
       redirect_to students_path, notice: "Student created successfully!"
     else
-      render inertia: "Student/Create", props: {
+      render inertia: "Student/New", props: {
         errors: @student.errors
       }
     end
@@ -26,6 +26,6 @@ class StudentsController < ApplicationController
   private
 
   def student_params
-    params.require(:student).permit(:name, :address, :birth_date, :mother_name, :father_name, :date_joined, :hifz_in_juz, :hifz_in_page)
+    params.expect(student: [ :name, :current_hifz_in_juz, :current_hifz_in_pages, :avatar, :class_level, :phone, :email, :status, :gender, :birth_place, :birth_date, :address, :father_name, :mother_name, :father_phone, :mother_phone, :date_joined ])
   end
 end

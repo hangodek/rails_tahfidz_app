@@ -12,19 +12,19 @@ interface StudentFormData {
   current_hifz_in_juz: string
   current_hifz_in_pages: string
   avatar: File | null
-  class: string
+  class_level: string
   phone: string
   email: string
   status: string
   gender: string
-  birthPlace: string
-  birthDate: string
+  birth_place: string
+  birth_date: string
   address: string
-  fatherName: string
-  motherName: string
-  fatherPhone: string
-  motherPhone: string
-  dateJoined: string
+  father_name: string
+  mother_name: string
+  father_phone: string
+  mother_phone: string
+  date_joined: string
 }
 
 export default function CreateStudent() {
@@ -33,19 +33,19 @@ export default function CreateStudent() {
     current_hifz_in_juz: "0",
     current_hifz_in_pages: "0",
     avatar: null,
-    class: "",
+    class_level: "",
     phone: "",
     email: "",
     status: "active",
     gender: "",
-    birthPlace: "",
-    birthDate: "",
+    birth_place: "",
+    birth_date: "",
     address: "",
-    fatherName: "",
-    motherName: "",
-    fatherPhone: "",
-    motherPhone: "",
-    dateJoined: "",
+    father_name: "",
+    mother_name: "",
+    father_phone: "",
+    mother_phone: "",
+    date_joined: "",
   })
 
   const [errors, setErrors] = useState<Partial<StudentFormData>>({})
@@ -82,21 +82,20 @@ export default function CreateStudent() {
   const validateForm = (): boolean => {
     const newErrors: Partial<StudentFormData> = {}
 
+    // Required fields (null: false in schema)
     if (!formData.name.trim()) newErrors.name = "Student name is required"
-    if (!formData.birthDate) newErrors.birthDate = "Date of birth is required"
-    if (!formData.birthPlace.trim()) newErrors.birthPlace = "Place of birth is required"
-    if (!formData.address.trim()) newErrors.address = "Address is required"
-    if (!formData.phone.trim()) newErrors.phone = "Phone number is required"
-    if (!formData.email.trim()) newErrors.email = "Email is required"
-    if (!formData.class) newErrors.class = "Class is required"
-    if (!formData.gender) newErrors.gender = "Gender is required"
-    if (!formData.fatherName.trim()) newErrors.fatherName = "Father's name is required"
-    if (!formData.motherName.trim()) newErrors.motherName = "Mother's name is required"
-    if (!formData.fatherPhone.trim()) newErrors.fatherPhone = "Father's phone is required"
-    if (!formData.motherPhone.trim()) newErrors.motherPhone = "Mother's phone is required"
-    if (!formData.dateJoined) newErrors.dateJoined = "Date joined is required"
+    if (!formData.current_hifz_in_juz.trim()) newErrors.current_hifz_in_juz = "Current Juz is required"
+    if (!formData.current_hifz_in_pages.trim()) newErrors.current_hifz_in_pages = "Current pages is required"
+    if (!formData.class_level.trim()) newErrors.class_level = "Class is required"
+    if (!formData.status.trim()) newErrors.status = "Status is required"
+    if (!formData.gender.trim()) newErrors.gender = "Gender is required"
+    if (!formData.birth_place.trim()) newErrors.birth_place = "Place of birth is required"
+    if (!formData.birth_date) newErrors.birth_date = "Date of birth is required"
+    if (!formData.father_name.trim()) newErrors.father_name = "Father's name is required"
+    if (!formData.mother_name.trim()) newErrors.mother_name = "Mother's name is required"
+    if (!formData.date_joined) newErrors.date_joined = "Date joined is required"
 
-    // Email validation
+    // Optional fields validation (only validate format if provided)
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Invalid email format"
     }
@@ -122,19 +121,19 @@ export default function CreateStudent() {
       formDataToSend.append('student[name]', formData.name)
       formDataToSend.append('student[current_hifz_in_juz]', formData.current_hifz_in_juz)
       formDataToSend.append('student[current_hifz_in_pages]', formData.current_hifz_in_pages)
-      formDataToSend.append('student[class]', formData.class)
+      formDataToSend.append('student[class_level]', formData.class_level)
       formDataToSend.append('student[phone]', formData.phone)
       formDataToSend.append('student[email]', formData.email)
       formDataToSend.append('student[status]', formData.status)
       formDataToSend.append('student[gender]', formData.gender)
-      formDataToSend.append('student[birthPlace]', formData.birthPlace)
-      formDataToSend.append('student[birthDate]', formData.birthDate)
+      formDataToSend.append('student[birth_place]', formData.birth_place)
+      formDataToSend.append('student[birth_date]', formData.birth_date)
       formDataToSend.append('student[address]', formData.address)
-      formDataToSend.append('student[fatherName]', formData.fatherName)
-      formDataToSend.append('student[motherName]', formData.motherName)
-      formDataToSend.append('student[fatherPhone]', formData.fatherPhone)
-      formDataToSend.append('student[motherPhone]', formData.motherPhone)
-      formDataToSend.append('student[dateJoined]', formData.dateJoined)
+      formDataToSend.append('student[father_name]', formData.father_name)
+      formDataToSend.append('student[mother_name]', formData.mother_name)
+      formDataToSend.append('student[father_phone]', formData.father_phone)
+      formDataToSend.append('student[mother_phone]', formData.mother_phone)
+      formDataToSend.append('student[date_joined]', formData.date_joined)
       
       // Add avatar file if selected
       if (formData.avatar) {

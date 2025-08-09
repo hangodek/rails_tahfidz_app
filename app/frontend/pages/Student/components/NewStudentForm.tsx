@@ -12,19 +12,19 @@ interface StudentFormData {
   current_hifz_in_juz: string
   current_hifz_in_pages: string
   avatar: File | null
-  class: string
+  class_level: string
   phone: string
   email: string
   status: string
   gender: string
-  birthPlace: string
-  birthDate: string
+  birth_place: string
+  birth_date: string
   address: string
-  fatherName: string
-  motherName: string
-  fatherPhone: string
-  motherPhone: string
-  dateJoined: string
+  father_name: string
+  mother_name: string
+  father_phone: string
+  mother_phone: string
+  date_joined: string
 }
 
 interface NewStudentFormProps {
@@ -37,7 +37,7 @@ interface NewStudentFormProps {
 export function NewStudentForm({ formData, errors, handleInputChange, handleFileChange }: NewStudentFormProps) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 
-  const handleDateChange = (field: 'birthDate' | 'dateJoined') => (date: Date | undefined) => {
+  const handleDateChange = (field: 'birth_date' | 'date_joined') => (date: Date | undefined) => {
     if (date) {
       const year = date.getFullYear()
       const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -64,8 +64,8 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
     }
   }
 
-  const selectedBirthDate = formData.birthDate ? new Date(formData.birthDate + 'T12:00:00') : undefined
-  const selectedDateJoined = formData.dateJoined ? new Date(formData.dateJoined + 'T12:00:00') : undefined
+  const selectedBirthDate = formData.birth_date ? new Date(formData.birth_date + 'T12:00:00') : undefined
+  const selectedDateJoined = formData.date_joined ? new Date(formData.date_joined + 'T12:00:00') : undefined
 
   const classes = ["Class A", "Class B", "Class C"]
   const statuses = ["active", "inactive", "graduated"]
@@ -151,31 +151,31 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="birthPlace">Place of Birth *</Label>
+              <Label htmlFor="birth_place">Place of Birth *</Label>
               <Input
-                id="birthPlace"
-                value={formData.birthPlace}
-                onChange={(e) => handleInputChange("birthPlace", e.target.value)}
+                id="birth_place"
+                value={formData.birth_place}
+                onChange={(e) => handleInputChange("birth_place", e.target.value)}
                 placeholder="Enter place of birth"
-                className={errors.birthPlace ? "border-red-500" : ""}
+                className={errors.birth_place ? "border-red-500" : ""}
               />
-              {errors.birthPlace && <p className="text-sm text-red-500">{errors.birthPlace}</p>}
+              {errors.birth_place && <p className="text-sm text-red-500">{errors.birth_place}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="birthDate">Date of Birth *</Label>
+              <Label htmlFor="birth_date">Date of Birth *</Label>
               <DatePicker
-                id="birthDate"
+                id="birth_date"
                 date={selectedBirthDate}
-                onDateChange={handleDateChange('birthDate')}
+                onDateChange={handleDateChange('birth_date')}
                 placeholder="Select date of birth"
-                className={`cursor-pointer border-gray-300/60 ${errors.birthDate ? "border-red-500" : ""}`}
+                className={`cursor-pointer border-gray-300/60 ${errors.birth_date ? "border-red-500" : ""}`}
               />
-              {errors.birthDate && <p className="text-sm text-red-500">{errors.birthDate}</p>}
+              {errors.birth_date && <p className="text-sm text-red-500">{errors.birth_date}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number *</Label>
+              <Label htmlFor="phone">Phone Number</Label>
               <Input
                 id="phone"
                 value={formData.phone}
@@ -187,7 +187,7 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address *</Label>
+              <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 type="email"
@@ -201,7 +201,7 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">Address *</Label>
+            <Label htmlFor="address">Address</Label>
             <Textarea
               id="address"
               value={formData.address}
@@ -229,51 +229,51 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="fatherName">Father's Name *</Label>
+              <Label htmlFor="father_name">Father's Name *</Label>
               <Input
-                id="fatherName"
-                value={formData.fatherName}
-                onChange={(e) => handleInputChange("fatherName", e.target.value)}
+                id="father_name"
+                value={formData.father_name}
+                onChange={(e) => handleInputChange("father_name", e.target.value)}
                 placeholder="Enter father's full name"
-                className={errors.fatherName ? "border-red-500" : ""}
+                className={errors.father_name ? "border-red-500" : ""}
               />
-              {errors.fatherName && <p className="text-sm text-red-500">{errors.fatherName}</p>}
+              {errors.father_name && <p className="text-sm text-red-500">{errors.father_name}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="motherName">Mother's Name *</Label>
+              <Label htmlFor="mother_name">Mother's Name *</Label>
               <Input
-                id="motherName"
-                value={formData.motherName}
-                onChange={(e) => handleInputChange("motherName", e.target.value)}
+                id="mother_name"
+                value={formData.mother_name}
+                onChange={(e) => handleInputChange("mother_name", e.target.value)}
                 placeholder="Enter mother's full name"
-                className={errors.motherName ? "border-red-500" : ""}
+                className={errors.mother_name ? "border-red-500" : ""}
               />
-              {errors.motherName && <p className="text-sm text-red-500">{errors.motherName}</p>}
+              {errors.mother_name && <p className="text-sm text-red-500">{errors.mother_name}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fatherPhone">Father's Phone *</Label>
+              <Label htmlFor="father_phone">Father's Phone</Label>
               <Input
-                id="fatherPhone"
-                value={formData.fatherPhone}
-                onChange={(e) => handleInputChange("fatherPhone", e.target.value)}
+                id="father_phone"
+                value={formData.father_phone}
+                onChange={(e) => handleInputChange("father_phone", e.target.value)}
                 placeholder="e.g., 081234567890"
-                className={errors.fatherPhone ? "border-red-500" : ""}
+                className={errors.father_phone ? "border-red-500" : ""}
               />
-              {errors.fatherPhone && <p className="text-sm text-red-500">{errors.fatherPhone}</p>}
+              {errors.father_phone && <p className="text-sm text-red-500">{errors.father_phone}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="motherPhone">Mother's Phone *</Label>
+              <Label htmlFor="mother_phone">Mother's Phone</Label>
               <Input
-                id="motherPhone"
-                value={formData.motherPhone}
-                onChange={(e) => handleInputChange("motherPhone", e.target.value)}
+                id="mother_phone"
+                value={formData.mother_phone}
+                onChange={(e) => handleInputChange("mother_phone", e.target.value)}
                 placeholder="e.g., 081234567890"
-                className={errors.motherPhone ? "border-red-500" : ""}
+                className={errors.mother_phone ? "border-red-500" : ""}
               />
-              {errors.motherPhone && <p className="text-sm text-red-500">{errors.motherPhone}</p>}
+              {errors.mother_phone && <p className="text-sm text-red-500">{errors.mother_phone}</p>}
             </div>
           </div>
         </CardContent>
@@ -294,8 +294,8 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="class">Class *</Label>
-              <Select value={formData.class} onValueChange={(value) => handleInputChange("class", value)}>
-                <SelectTrigger className={`cursor-pointer ${errors.class ? "border-red-500" : ""}`}>
+              <Select value={formData.class_level} onValueChange={(value) => handleInputChange("class_level", value)}>
+                <SelectTrigger className={`cursor-pointer ${errors.class_level ? "border-red-500" : ""}`}>
                   <SelectValue placeholder="Select class" />
                 </SelectTrigger>
                 <SelectContent className="border-gray-200/60">
@@ -306,11 +306,11 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
                   ))}
                 </SelectContent>
               </Select>
-              {errors.class && <p className="text-sm text-red-500">{errors.class}</p>}
+              {errors.class_level && <p className="text-sm text-red-500">{errors.class_level}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">Status *</Label>
               <Select value={formData.status} onValueChange={(value) => handleInputChange("status", value)}>
                 <SelectTrigger className="cursor-pointer">
                   <SelectValue placeholder="Select status" />
@@ -326,19 +326,19 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dateJoined">Date Joined *</Label>
+              <Label htmlFor="date_joined">Date Joined *</Label>
               <DatePicker
-                id="dateJoined"
+                id="date_joined"
                 date={selectedDateJoined}
-                onDateChange={handleDateChange('dateJoined')}
+                onDateChange={handleDateChange('date_joined')}
                 placeholder="Select date joined"
-                className={`cursor-pointer border-gray-300/60 ${errors.dateJoined ? "border-red-500" : ""}`}
+                className={`cursor-pointer border-gray-300/60 ${errors.date_joined ? "border-red-500" : ""}`}
               />
-              {errors.dateJoined && <p className="text-sm text-red-500">{errors.dateJoined}</p>}
+              {errors.date_joined && <p className="text-sm text-red-500">{errors.date_joined}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="current_hifz_in_juz">Current Juz Memorized</Label>
+              <Label htmlFor="current_hifz_in_juz">Current Juz Memorized *</Label>
               <Input
                 id="current_hifz_in_juz"
                 type="number"
@@ -352,17 +352,17 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="current_hifz_in_pages">Current Pages in Juz</Label>
+              <Label htmlFor="current_hifz_in_pages">Current Pages in Juz *</Label>
               <Input
                 id="current_hifz_in_pages"
                 type="number"
                 min="0"
-                max="20"
+                max="604"
                 value={formData.current_hifz_in_pages}
                 onChange={(e) => handleInputChange("current_hifz_in_pages", e.target.value)}
                 placeholder="0"
               />
-              <p className="text-xs text-muted-foreground">Enter current pages in ongoing Juz (0-20)</p>
+              <p className="text-xs text-muted-foreground">Enter current pages in ongoing Juz (0-604)</p>
             </div>
           </div>
         </CardContent>
