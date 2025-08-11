@@ -3,10 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 interface Student {
   id: string
   name: string
-  currentJuz: number
-  progress: number
-  avatar: string
-  class: string
+  class_level: string
+  current_hifz_in_juz: string
 }
 
 interface ActivityType {

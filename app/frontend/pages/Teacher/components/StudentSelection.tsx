@@ -6,10 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 interface Student {
   id: string
   name: string
-  currentJuz: number
-  progress: number
-  avatar: string
-  class: string
+  class_level: string
+  current_hifz_in_juz: string
 }
 
 interface StudentSelectionProps {
@@ -36,7 +34,7 @@ export function StudentSelection({ students, selectedStudent, setSelectedStudent
               <SelectItem key={student.id} value={student.id} className="cursor-pointer">
                 <div className="flex gap-2 items-centerspace-x-2 sm:space-x-3">
                   <Avatar className="h-5 w-5 sm:h-6 sm:w-6">
-                    <AvatarImage src={student.avatar || "/placeholder.svg"} />
+                    <AvatarImage src="/placeholder.svg" />
                     <AvatarFallback className="text-xs">
                       {student.name
                         .split(" ")
@@ -47,7 +45,7 @@ export function StudentSelection({ students, selectedStudent, setSelectedStudent
                   <div>
                     <span className="font-medium text-sm sm:text-base">{student.name}</span>
                     <span className="text-xs sm:text-sm text-muted-foreground ml-1 sm:ml-2">
-                      {student.class} - Juz {student.currentJuz}
+                      {student.class_level} - Juz {student.current_hifz_in_juz}
                     </span>
                   </div>
                 </div>
@@ -60,7 +58,7 @@ export function StudentSelection({ students, selectedStudent, setSelectedStudent
           <div className="mt-4 p-3 sm:p-4 bg-blue-50 rounded-lg">
             <div className="flex items-center space-x-2 sm:space-x-3">
               <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
-                <AvatarImage src={currentStudent.avatar || "/placeholder.svg"} />
+                <AvatarImage src="/placeholder.svg" />
                 <AvatarFallback>
                   {currentStudent.name
                     .split(" ")
@@ -70,8 +68,7 @@ export function StudentSelection({ students, selectedStudent, setSelectedStudent
               </Avatar>
               <div>
                 <h3 className="text-sm sm:text-base font-semibold">{currentStudent.name}</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">{currentStudent.class}</p>
-                <Badge variant="secondary" className="text-xs">Juz {currentStudent.currentJuz}</Badge>
+                <p className="text-xs sm:text-sm text-muted-foreground">{currentStudent.class_level}</p>
               </div>
             </div>
           </div>

@@ -51,6 +51,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_094246) do
 
   create_table "activities", force: :cascade do |t|
     t.integer "student_id", null: false
+    t.integer "activity_type", default: 0, null: false
+    t.string "surah_name", null: false
+    t.integer "verse_from", null: false
+    t.integer "verse_to", null: false
+    t.integer "juz"
+    t.text "notes"
+    t.integer "evaluation", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["student_id"], name: "index_activities_on_student_id"

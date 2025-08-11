@@ -101,50 +101,6 @@ class AudioStorage {
   }
 }
 
-// Sample students data (would come from Rails props)
-const students = [
-  {
-    id: "1",
-    name: "Ahmad Fauzi",
-    currentJuz: 15,
-    progress: 85,
-    avatar: "/placeholder.svg?height=32&width=32",
-    class: "Kelas A",
-  },
-  {
-    id: "2",
-    name: "Fatimah Zahra",
-    currentJuz: 14,
-    progress: 82,
-    avatar: "/placeholder.svg?height=32&width=32",
-    class: "Kelas A",
-  },
-  {
-    id: "3",
-    name: "Muhammad Rizki",
-    currentJuz: 13,
-    progress: 78,
-    avatar: "/placeholder.svg?height=32&width=32",
-    class: "Kelas B",
-  },
-  {
-    id: "4",
-    name: "Aisyah Putri",
-    currentJuz: 12,
-    progress: 75,
-    avatar: "/placeholder.svg?height=32&width=32",
-    class: "Kelas A",
-  },
-  {
-    id: "5",
-    name: "Abdullah Malik",
-    currentJuz: 11,
-    progress: 70,
-    avatar: "/placeholder.svg?height=32&width=32",
-    class: "Kelas B",
-  },
-]
-
 // Activity types
 const activityTypes = [
   { value: "memorization", label: "Memorization", icon: BookOpen, color: "bg-blue-500" },
@@ -270,9 +226,16 @@ const surahList = [
   "An-Nas",
 ]
 
-type TeacherIndexProps = {}
+type TeacherIndexProps = {
+  students: Array<{
+    id: string
+    name: string
+    class_level: string
+    current_hifz_in_juz: string
+  }>
+}
 
-export default function TeacherIndex({}: TeacherIndexProps) {
+export default function TeacherIndex({ students }: TeacherIndexProps) {
   const [selectedStudent, setSelectedStudent] = useState<string>("")
   const [activityType, setActivityType] = useState<string>("")
   const [isRecording, setIsRecording] = useState(false)
