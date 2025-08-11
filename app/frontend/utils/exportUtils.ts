@@ -107,7 +107,7 @@ export const exportStudentsToPDF = (students: Student[], filteredStudents?: Stud
   }
   
   // Save the PDF
-  const fileName = `tahfidz-students-${format(new Date(), 'yyyy-MM-dd')}.pdf`
+  const fileName = `hifz-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`
   doc.save(fileName)
 }
 
