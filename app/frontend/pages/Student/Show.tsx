@@ -480,7 +480,7 @@ export default function StudentShow({ student }: StudentShowProps) {
               <CardDescription>Summary of {student?.name}'s achievements</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
                   <div className="text-2xl font-bold text-blue-600">{student?.current_hifz_in_juz}</div>
                   <div className="text-sm text-muted-foreground">Current Juz</div>
@@ -489,7 +489,7 @@ export default function StudentShow({ student }: StudentShowProps) {
                   <div className="text-2xl font-bold text-green-600">{student?.current_hifz_in_pages}</div>
                   <div className="text-sm text-muted-foreground">Pages Memorized</div>
                 </div>
-                <div className="text-center p-4 bg-orange-50 rounded-lg sm:col-span-2 lg:col-span-1">
+                <div className="text-center p-4 bg-orange-50 rounded-lg sm:col-span-2 lg:col-span-2">
                   <div className="text-2xl font-bold text-orange-600">22</div>
                   <div className="text-sm text-muted-foreground">Total Submissions</div>
                 </div>

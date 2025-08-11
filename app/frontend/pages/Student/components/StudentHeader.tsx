@@ -9,27 +9,27 @@ export function StudentHeader() {
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Student List</h1>
         <p className="text-sm sm:text-base text-muted-foreground">Manage and monitor Quran memorization student data</p>
       </div>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
-        <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/teachers")}>
+      <div className="grid grid-cols-2 gap-2">
+        <Button variant="outline" className="border-gray-200/60 cursor-pointer md:w-full" onClick={() => router.visit("/teachers")}>
           <Mic className="h-4 w-4 mr-2" />
           <span className="hidden sm:inline">Teacher Mode</span>
           <span className="sm:hidden">Teacher</span>
         </Button>
         <Button
           variant="outline" 
-          className="border-gray-200/60 cursor-pointer"
+          className="border-gray-200/60 cursor-pointer md:w-full"
           onClick={() => router.visit("/students/new")}
         >
           <Plus className="h-4 w-4 mr-2" />
           <span className="hidden sm:inline">Add Student</span>
           <span className="sm:hidden">Add</span>
         </Button>
-        <Button variant="outline" className="border-gray-200/60 cursor-pointer">
+        <Button variant="outline" className="border-gray-200/60 cursor-pointer md:w-full">
           <Download className="h-4 w-4 mr-2" />
           <span className="hidden sm:inline">Export Data</span>
           <span className="sm:hidden">Export</span>
         </Button>
-        <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/dashboard")}>
+        <Button variant="outline" className="border-gray-200/60 cursor-pointer md:w-full" onClick={() => router.visit("/dashboard")}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           <span className="hidden sm:inline">Back to Dashboard</span>
           <span className="sm:hidden">Back</span>

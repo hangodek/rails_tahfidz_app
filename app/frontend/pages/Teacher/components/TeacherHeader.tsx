@@ -9,7 +9,7 @@ export function TeacherHeader() {
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Hidz Dashboard</h1>
         <p className="text-sm sm:text-base text-muted-foreground">Monitor and analyze student Quran memorization progress</p>
       </div>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
+      <div className="grid grid-cols-2 gap-2">
         <Button variant="outline" className="border-gray-200/60 cursor-pointer" onClick={() => router.visit("/students")}>
           <Users className="h-4 w-4 mr-2" />
           <span className="hidden sm:inline">View All Students</span>
