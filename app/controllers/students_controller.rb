@@ -1,6 +1,6 @@
 class StudentsController < ApplicationController
   def index
-    students = Student.all.map do |student|
+    students = Student.all.order(name: :asc).map do |student|
       student.as_json.merge(
         avatar: student.avatar.attached? ? url_for(student.avatar) : nil
       )

@@ -50,39 +50,39 @@ export function FiltersAndSearch({
             </div>
             <div className="flex flex-wrap justify-center items-center gap-2 sm:flex sm:gap-4">
               <Select value={classFilter} onValueChange={setClassFilter}>
-                <SelectTrigger className="border-gray-200/60">
+                <SelectTrigger className="border-gray-200/60 cursor-pointer">
                   <SelectValue placeholder="All Classes" />
                 </SelectTrigger>
                 <SelectContent className="border-gray-200/60">
-                  <SelectItem value="all">All Classes</SelectItem>
-                  <SelectItem value="Kelas A">Class A</SelectItem>
-                  <SelectItem value="Kelas B">Class B</SelectItem>
-                  <SelectItem value="Kelas C">Class C</SelectItem>
+                  <SelectItem className="cursor-pointer" value="all">All Classes</SelectItem>
+                  <SelectItem className="cursor-pointer"value="Kelas A">Class A</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Kelas B">Class B</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Kelas C">Class C</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="border-gray-200/60">
+                <SelectTrigger className="border-gray-200/60 cursor-pointer">
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent className="border-gray-200/60">
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="graduated">Graduated</SelectItem>
+                  <SelectItem className="cursor-pointer" value="all">All Status</SelectItem>
+                  <SelectItem className="cursor-pointer" value="active">Active</SelectItem>
+                  <SelectItem className="cursor-pointer" value="inactive">Inactive</SelectItem>
+                  <SelectItem className="cursor-pointer" value="graduated">Graduated</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={juzFilter} onValueChange={setJuzFilter}>
-                <SelectTrigger className="border-gray-200/60">
+                <SelectTrigger className="border-gray-200/60 cursor-pointer">
                   <SelectValue placeholder="All Juz" />
                 </SelectTrigger>
                 <SelectContent className="border-gray-200/60">
-                  <SelectItem value="all">All Juz</SelectItem>
-                  <SelectItem value="Juz 1-5">Juz 1-5</SelectItem>
-                  <SelectItem value="Juz 6-10">Juz 6-10</SelectItem>
-                  <SelectItem value="Juz 11-15">Juz 11-15</SelectItem>
-                  <SelectItem value="Juz 16-20">Juz 16-20</SelectItem>
-                  <SelectItem value="Juz 21-25">Juz 21-25</SelectItem>
-                  <SelectItem value="Juz 26-30">Juz 26-30</SelectItem>
+                  <SelectItem className="cursor-pointer" value="all">All Juz</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Juz 1-5">Juz 1-5</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Juz 6-10">Juz 6-10</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Juz 11-15">Juz 11-15</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Juz 16-20">Juz 16-20</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Juz 21-25">Juz 21-25</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Juz 26-30">Juz 26-30</SelectItem>
                 </SelectContent>
               </Select>
             </div>
