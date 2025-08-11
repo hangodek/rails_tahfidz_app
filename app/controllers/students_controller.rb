@@ -12,7 +12,11 @@ class StudentsController < ApplicationController
   end
 
   def show
-    render inertia: "Student/Show"
+    render inertia: "Student/Show", props: {
+      student: Student.find(params[:id]).as_json.merge(
+        avatar: Student.find(params[:id]).avatar.attached? ? url_for(Student.find(params[:id]).avatar) : nil
+      )
+    }
   end
 
   def new

@@ -34,74 +34,33 @@ import {
   User,
   ArrowLeft,
   ChevronDown,
+  BarChart3,
 } from "lucide-react"
 import { router } from "@inertiajs/react"
 
-// Student type definition
+// Student type definition matching database schema
 interface Student {
   id: string
   name: string
-  current_hifz_in_juz: number
-  current_hifz_in_pages: number
-  avatar: string
-  class: string
-  phone: string
-  email: string
+  current_hifz_in_juz: string
+  current_hifz_in_pages: string
+  avatar?: string
+  class_level: string
+  phone?: string
+  email?: string
   status: string
   gender: string
-  birthPlace: string
-  birthDate: string
-  address: string
-  fatherName: string
-  motherName: string
-  fatherPhone: string
-  motherPhone: string
-  dateJoined: string
+  birth_place: string
+  birth_date: string
+  address?: string
+  father_name: string
+  mother_name: string
+  father_phone?: string
+  mother_phone?: string
+  date_joined: string
+  created_at: string
+  updated_at: string
 }
-
-// Sample student data (would come from Rails props)
-const allStudents = [
-  {
-    id: "1",
-    name: "Ahmad Fadhil",
-    current_hifz_in_juz: 3,
-    current_hifz_in_pages: 45,
-    avatar: "/placeholder.svg",
-    class: "Kelas A",
-    phone: "081234567890",
-    email: "ahmad.fadhil@email.com",
-    status: "active",
-    gender: "male",
-    birthPlace: "Jakarta",
-    birthDate: "15 Januari 2010",
-    address: "Jl. Masjid Al-Ikhlas No. 123, Kelurahan Suka Maju, Jakarta Selatan 12345",
-    fatherName: "Bapak Ahmad Suryadi",
-    motherName: "Ibu Siti Nurhaliza",
-    fatherPhone: "+62 812-3456-7890",
-    motherPhone: "+62 813-4567-8901",
-    dateJoined: "1 September 2023",
-  },
-  {
-    id: "2", 
-    name: "Fatimah Azzahra",
-    current_hifz_in_juz: 2,
-    current_hifz_in_pages: 30,
-    avatar: "/placeholder.svg",
-    class: "Kelas A",
-    phone: "081234567891",
-    email: "fatimah.azzahra@email.com",
-    status: "active",
-    gender: "female",
-    birthPlace: "Bandung",
-    birthDate: "22 Maret 2010",
-    address: "Jl. Pesantren Indah No. 45, Kelurahan Bahagia, Bandung 40123",
-    fatherName: "Bapak Muhammad Zainal",
-    motherName: "Ibu Fatimah Azzahra",
-    fatherPhone: "+62 822-3456-7890",
-    motherPhone: "+62 823-4567-8901",
-    dateJoined: "15 Agustus 2023",
-  },
-]
 
 // Generate daily submissions data for date range
 const generateDailySubmissions = (startDate: Date, endDate: Date) => {
@@ -131,8 +90,7 @@ const juzDistribution = [
 ]
 
 // Student specific data
-const getStudentData = (studentId: string, startDate: Date, endDate: Date) => {
-  const student = allStudents.find((s: Student) => s.id === studentId)
+const getStudentData = (student: Student, startDate: Date, endDate: Date) => {
   if (!student) return null
 
   return {
@@ -146,7 +104,7 @@ const getStudentData = (studentId: string, startDate: Date, endDate: Date) => {
       { month: "Mar", completed: 11 },
       { month: "Apr", completed: 12 },
       { month: "Mei", completed: 14 },
-      { month: "Jun", completed: student.current_hifz_in_juz },
+      { month: "Jun", completed: parseInt(student.current_hifz_in_juz) || 0 },
     ],
     recentActivities: [
       { activity: "Menyelesaikan Al-Baqarah ayat 1-10", time: "2 jam lalu", type: "hafalan" },
@@ -158,20 +116,37 @@ const getStudentData = (studentId: string, startDate: Date, endDate: Date) => {
 }
 
 interface StudentShowProps {
-  studentId: string // This would be passed as a prop from Rails
-  // studentData: any; // The actual student data object
+  student: Student // The actual student data object from Rails controller
 }
 
-export default function StudentShow({ studentId }: StudentShowProps) {
+export default function StudentShow({ student }: StudentShowProps) {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
     from: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 7 days ago
     to: new Date(),
   })
 
-  const currentStudent = allStudents.find((s: Student) => s.id === studentId)
-  const studentData = currentStudent ? getStudentData(studentId, dateRange.from, dateRange.to) : null
+  const studentData = student ? getStudentData(student, dateRange.from, dateRange.to) : null
 
-  if (!currentStudent) {
+  // Helper function to get avatar URL
+  const getAvatarUrl = (avatar?: string): string => {
+    if (!avatar) return "/placeholder.svg"
+    
+    // If avatar is already a full URL, use it
+    if (avatar.startsWith('http')) return avatar
+    
+    // If avatar is a path starting with /, use it as is
+    if (avatar.startsWith('/')) return avatar
+    
+    // If avatar looks like a Rails Active Storage signed ID or blob key
+    if (avatar.includes('-') && avatar.length > 10) {
+      return `/rails/active_storage/blobs/redirect/${avatar}/avatar`
+    }
+    
+    // Fallback: try to construct Rails Active Storage URL
+    return `/rails/active_storage/blobs/${avatar}`
+  }
+
+  if (!student) {
     return (
       <div className="min-h-screen bg-gray-50/50 flex items-center justify-center">
         <Card>
@@ -193,43 +168,48 @@ export default function StudentShow({ studentId }: StudentShowProps) {
 
   return (
     <div className="min-h-screen bg-gray-50/50">
-      <div className="flex flex-col space-y-6 p-6">
+      <div className="flex flex-col space-y-4 sm:space-y-6 p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="cursor-pointer">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Progress {student?.name}</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">Student's memorization progress and activity details</p>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
+            <Button
+              variant="outline"
+              className="border-gray-200/60 cursor-pointer"
+              onClick={() => router.visit('/students')}
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
+              <span className="hidden sm:inline">Back to Students</span>
+              <span className="sm:hidden">Back</span>
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">Progress {currentStudent?.name}</h1>
-              <p className="text-muted-foreground">Student's memorization progress and activity details</p>
-            </div>
           </div>
         </div>
 
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-16 w-16">
-                <AvatarImage src={currentStudent.avatar || "/placeholder.svg"} />
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <Avatar className="h-16 w-16 sm:h-16 sm:w-16">
+                <AvatarImage src={getAvatarUrl(student.avatar)} alt={`${student.name}'s avatar`} />
                 <AvatarFallback className="text-lg">
-                  {currentStudent.name
+                  {student.name
                     .split(" ")
                     .map((n: string) => n[0])
                     .join("")}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold">{currentStudent.name}</h2>
-                <p className="text-muted-foreground">Juz {currentStudent.current_hifz_in_juz} of 30 Juz</p>
+              <div className="flex-1 text-center sm:text-left">
+                <h2 className="text-xl sm:text-2xl font-bold">{student.name}</h2>
+                <p className="text-muted-foreground">Juz {student.current_hifz_in_juz} of 30 Juz</p>
                 <div className="mt-2">
-                  <div className="text-sm text-muted-foreground">{currentStudent.current_hifz_in_pages} pages memorized</div>
+                  <div className="text-sm text-muted-foreground">{student.current_hifz_in_pages} pages memorized</div>
                 </div>
               </div>
-              <div className="text-right">
-                <Badge variant="secondary" className="text-lg px-3 py-1">
-                  Juz {currentStudent.current_hifz_in_juz}
+              <div className="text-center sm:text-right">
+                <Badge variant="secondary" className="text-base sm:text-lg px-3 py-1">
+                  Juz {student.current_hifz_in_juz}
                 </Badge>
               </div>
             </div>
@@ -238,59 +218,59 @@ export default function StudentShow({ studentId }: StudentShowProps) {
 
         {/* Student detailed information card */}
         <Card className="border-gray-200/60 shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
               <User className="h-5 w-5" />
               Student Details
             </CardTitle>
-            <CardDescription>Complete data and contact information</CardDescription>
+            <CardDescription className="text-sm">Complete data and contact information</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Full Name</label>
-                  <p className="text-sm">{currentStudent.name}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Full Name</label>
+                  <p className="text-sm sm:text-base mt-1">{student.name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Gender</label>
-                  <p className="text-sm">{currentStudent.gender === 'male' ? 'Male' : 'Female'}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Gender</label>
+                  <p className="text-sm sm:text-base mt-1">{student.gender === 'male' ? 'Male' : 'Female'}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Place, Date of Birth</label>
-                  <p className="text-sm">
-                    {currentStudent.birthPlace}, {currentStudent.birthDate}
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Place, Date of Birth</label>
+                  <p className="text-sm sm:text-base mt-1">
+                    {student.birth_place}, {student.birth_date}
                   </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Address</label>
-                  <p className="text-sm">{currentStudent.address}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Address</label>
+                  <p className="text-sm sm:text-base mt-1">{student.address || 'Not provided'}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Class</label>
-                  <p className="text-sm">{currentStudent.class} - Intensive Tahfidz</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Class</label>
+                  <p className="text-sm sm:text-base mt-1">{student.class_level}</p>
                 </div>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Father's Name</label>
-                  <p className="text-sm">{currentStudent.fatherName}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Father's Name</label>
+                  <p className="text-sm sm:text-base mt-1">{student.father_name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Mother's Name</label>
-                  <p className="text-sm">{currentStudent.motherName}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Mother's Name</label>
+                  <p className="text-sm sm:text-base mt-1">{student.mother_name}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Father's Phone</label>
-                  <p className="text-sm">{currentStudent.fatherPhone}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Father's Phone</label>
+                  <p className="text-sm sm:text-base mt-1">{student.father_phone || 'Not provided'}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Mother's Phone</label>
-                  <p className="text-sm">{currentStudent.motherPhone}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Mother's Phone</label>
+                  <p className="text-sm sm:text-base mt-1">{student.mother_phone || 'Not provided'}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Date Joined</label>
-                  <p className="text-sm">{currentStudent.dateJoined}</p>
+                  <label className="text-xs sm:text-sm font-medium text-muted-foreground">Date Joined</label>
+                  <p className="text-sm sm:text-base mt-1">{student.date_joined}</p>
                 </div>
               </div>
             </div>
@@ -318,14 +298,14 @@ export default function StudentShow({ studentId }: StudentShowProps) {
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Juz {currentStudent?.current_hifz_in_juz || 0}</div>
-              <p className="text-xs text-muted-foreground">{currentStudent?.current_hifz_in_pages || 0} pages memorized</p>
+              <div className="text-2xl font-bold">Juz {student?.current_hifz_in_juz || 0}</div>
+              <p className="text-xs text-muted-foreground">{student?.current_hifz_in_pages || 0} pages memorized</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Charts Section */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Charts Section - Hidden on mobile */}
+        <div className="hidden md:grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Daily Submissions Chart with Date Range */}
           <Card className="col-span-2 border-gray-200/60 shadow-sm">
             <CardHeader>
@@ -335,7 +315,7 @@ export default function StudentShow({ studentId }: StudentShowProps) {
                     <CalendarIcon className="h-5 w-5" />
                     Daily Submissions
                   </CardTitle>
-                  <CardDescription>{currentStudent?.name}'s daily memorization submissions</CardDescription>
+                  <CardDescription>{student?.name}'s daily memorization submissions</CardDescription>
                 </div>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -447,14 +427,14 @@ export default function StudentShow({ studentId }: StudentShowProps) {
           </Card>
         </div>
 
-        {/* Progress Chart */}
-        <Card className="border-gray-200/60 shadow-sm">
+        {/* Progress Chart - Hidden on mobile */}
+        <Card className="hidden md:block border-gray-200/60 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
               Monthly Progress
             </CardTitle>
-            <CardDescription>{currentStudent?.name}'s monthly memorization progress (cumulative)</CardDescription>
+            <CardDescription>{student?.name}'s monthly memorization progress (cumulative)</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -472,6 +452,24 @@ export default function StudentShow({ studentId }: StudentShowProps) {
 
         {/* Bottom Section */}
         <div className="grid gap-6 md:grid-cols-2">
+
+          {/* Mobile Chart Notice */}
+          <div className="md:hidden">
+            <Card className="border-blue-200/60 bg-blue-50/30 shadow-md">
+              <CardContent className="pt-4 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                    <BarChart3 className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-800">Charts Available on Larger Screens</p>
+                    <p className="text-xs text-blue-600">View detailed analytics and progress charts on tablet or desktop</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Student Stats */}
           <Card className="border-gray-200/60 shadow-sm">
             <CardHeader>
@@ -479,25 +477,21 @@ export default function StudentShow({ studentId }: StudentShowProps) {
                 <Target className="h-5 w-5" />
                 Student Statistics
               </CardTitle>
-              <CardDescription>Summary of {currentStudent?.name}'s achievements</CardDescription>
+              <CardDescription>Summary of {student?.name}'s achievements</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{currentStudent?.current_hifz_in_juz}</div>
+                  <div className="text-2xl font-bold text-blue-600">{student?.current_hifz_in_juz}</div>
                   <div className="text-sm text-muted-foreground">Current Juz</div>
                 </div>
                 <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">{currentStudent?.current_hifz_in_pages}</div>
+                  <div className="text-2xl font-bold text-green-600">{student?.current_hifz_in_pages}</div>
                   <div className="text-sm text-muted-foreground">Pages Memorized</div>
                 </div>
-                <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <div className="text-center p-4 bg-orange-50 rounded-lg sm:col-span-2 lg:col-span-1">
                   <div className="text-2xl font-bold text-orange-600">22</div>
                   <div className="text-sm text-muted-foreground">Total Submissions</div>
-                </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">95%</div>
-                  <div className="text-sm text-muted-foreground">Attendance</div>
                 </div>
               </div>
             </CardContent>
@@ -510,7 +504,7 @@ export default function StudentShow({ studentId }: StudentShowProps) {
                 <Clock className="h-5 w-5" />
                 Recent Activities
               </CardTitle>
-              <CardDescription>Latest activities of {currentStudent?.name}</CardDescription>
+              <CardDescription>Latest activities of {student?.name}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {(studentData?.recentActivities || []).map((activity, index) => (
