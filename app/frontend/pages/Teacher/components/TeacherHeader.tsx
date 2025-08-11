@@ -6,7 +6,7 @@ export function TeacherHeader() {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Hidz Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Hifz Dashboard</h1>
         <p className="text-sm sm:text-base text-muted-foreground">Monitor and analyze student Quran memorization progress</p>
       </div>
       <div className="grid grid-cols-2 gap-2">

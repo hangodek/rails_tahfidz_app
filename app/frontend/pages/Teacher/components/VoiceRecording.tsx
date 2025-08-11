@@ -53,7 +53,7 @@ export function VoiceRecording({
           Voice Recording
           {isSaved && <CheckCircle className="h-5 w-5 text-green-500" />}
         </CardTitle>
-        <CardDescription>Record student voice during memorization session {isSaved && "- Saved to database"}</CardDescription>
+        <CardDescription>Record student voice during hifz session {isSaved && "- Saved to database"}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-center space-x-3 sm:space-x-4">

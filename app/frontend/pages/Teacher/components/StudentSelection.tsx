@@ -24,7 +24,7 @@ export function StudentSelection({ students, selectedStudent, setSelectedStudent
     <Card className="border-gray-200/60 shadow-lg">
       <CardHeader>
         <CardTitle>Select Student</CardTitle>
-        <CardDescription>Choose student for memorization session</CardDescription>
+        <CardDescription>Choose student for hifz session</CardDescription>
       </CardHeader>
       <CardContent>
         <Select value={selectedStudent} onValueChange={setSelectedStudent}>

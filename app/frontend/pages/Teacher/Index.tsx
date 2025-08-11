@@ -147,11 +147,9 @@ const students = [
 
 // Activity types
 const activityTypes = [
-  { value: "setoran_baru", label: "New Submission", icon: BookOpen, color: "bg-blue-500" },
-  { value: "muroja", label: "Murajaah", icon: Star, color: "bg-green-500" },
-  { value: "menyelesaikan_ayat", label: "Complete Verses", icon: Calendar, color: "bg-orange-500" },
-  { value: "menyelesaikan_juz", label: "Complete Juz", icon: Award, color: "bg-purple-500" },
-  { value: "evaluasi", label: "Evaluation", icon: Volume2, color: "bg-red-500" },
+  { value: "memorization", label: "Memorization", icon: BookOpen, color: "bg-blue-500" },
+  { value: "revision", label: "Revision", icon: Star, color: "bg-green-500" },
+  { value: "evaluation", label: "Evaluation", icon: Award, color: "bg-orange-500" },
 ]
 
 // Surah list for reference

@@ -19,7 +19,7 @@ export function StatsCards() {
 
       <Card className="border-gray-200/60 shadow-lg">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Students Doing Murajaah Today</CardTitle>
+          <CardTitle className="text-sm font-medium">Students Doing Revision Today</CardTitle>
           <BookOpen className="h-4 w-4 text-green-500" />
         </CardHeader>
         <CardContent>

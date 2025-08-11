@@ -47,7 +47,7 @@ export function ActivityForm({
           <Plus className="h-5 w-5" />
           Add Activity
         </CardTitle>
-        <CardDescription>Record student memorization activity</CardDescription>
+        <CardDescription>Record student activity</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
@@ -71,9 +71,9 @@ export function ActivityForm({
 
         {activityType && (
           <>
-            {(activityType === "setoran_baru" ||
-              activityType === "muroja" ||
-              activityType === "menyelesaikan_ayat") && (
+            {(activityType === "memorization" ||
+              activityType === "revision" ||
+              activityType === "evaluation") && (
               <>
                 <div className="space-y-2">
                   <Label>Surah</Label>
@@ -116,28 +116,26 @@ export function ActivityForm({
                     />
                   </div>
                 </div>
-              </>
-            )}
 
-            {activityType === "menyelesaikan_juz" && (
-              <div className="space-y-2">
-                <Label>Juz</Label>
-                <Select
-                  value={activityDetails.juz}
-                  onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, juz: value }))}
-                >
-                  <SelectTrigger className="border-gray-200/60">
-                    <SelectValue placeholder="Select juz..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 30 }, (_, i) => (
-                      <SelectItem key={i + 1} value={(i + 1).toString()}>
-                        Juz {i + 1}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                <div className="space-y-2">
+                  <Label>Juz</Label>
+                  <Select
+                    value={activityDetails.juz}
+                    onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, juz: value }))}
+                  >
+                    <SelectTrigger className="border-gray-200/60">
+                      <SelectValue placeholder="Select juz..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: 30 }, (_, i) => (
+                        <SelectItem key={i + 1} value={(i + 1).toString()}>
+                          Juz {i + 1}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
             )}
 
             <div className="space-y-2">
