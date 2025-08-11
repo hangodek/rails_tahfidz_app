@@ -188,7 +188,7 @@ export default function StudentShow({ student }: StudentShowProps) {
           </div>
         </div>
 
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-lg">
           <CardContent className="p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row items-center sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
               <Avatar className="h-16 w-16 sm:h-16 sm:w-16">
@@ -207,17 +207,12 @@ export default function StudentShow({ student }: StudentShowProps) {
                   <div className="text-sm text-muted-foreground">{student.current_hifz_in_pages} pages memorized</div>
                 </div>
               </div>
-              <div className="text-center sm:text-right">
-                <Badge variant="secondary" className="text-base sm:text-lg px-3 py-1">
-                  Juz {student.current_hifz_in_juz}
-                </Badge>
-              </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Student detailed information card */}
-        <Card className="border-gray-200/60 shadow-sm">
+        <Card className="border-gray-200/60 shadow-lg">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
               <User className="h-5 w-5" />
@@ -279,7 +274,7 @@ export default function StudentShow({ student }: StudentShowProps) {
 
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2">
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Today's Submission</CardTitle>
               <CalendarIcon className="h-4 w-4 text-muted-foreground" />
@@ -292,7 +287,7 @@ export default function StudentShow({ student }: StudentShowProps) {
             </CardContent>
           </Card>
 
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Current Juz</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -307,7 +302,7 @@ export default function StudentShow({ student }: StudentShowProps) {
         {/* Charts Section - Hidden on mobile */}
         <div className="hidden md:grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Daily Submissions Chart with Date Range */}
-          <Card className="col-span-2 border-gray-200/60 shadow-sm">
+          <Card className="col-span-2 border-gray-200/60 shadow-lg">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
@@ -395,7 +390,7 @@ export default function StudentShow({ student }: StudentShowProps) {
           </Card>
 
           {/* Juz Distribution */}
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5" />
@@ -428,7 +423,7 @@ export default function StudentShow({ student }: StudentShowProps) {
         </div>
 
         {/* Progress Chart - Hidden on mobile */}
-        <Card className="hidden md:block border-gray-200/60 shadow-sm">
+        <Card className="hidden md:block border-gray-200/60 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
@@ -471,7 +466,7 @@ export default function StudentShow({ student }: StudentShowProps) {
           </div>
 
           {/* Student Stats */}
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5" />
@@ -498,7 +493,7 @@ export default function StudentShow({ student }: StudentShowProps) {
           </Card>
 
           {/* Recent Activities */}
-          <Card className="border-gray-200/60 shadow-sm">
+          <Card className="border-gray-200/60 shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
