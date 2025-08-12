@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   resource :session
   resources :dashboard, only: [ :index ]
-  resources :students, only: [ :index, :new, :create, :show ]
+  resources :students, only: [ :index, :new, :create, :show ] do
+    resources :activities, only: [ :create, :destroy ]
+  end
   resources :teachers, only: [ :index ]
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

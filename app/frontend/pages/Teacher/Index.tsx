@@ -105,7 +105,6 @@ class AudioStorage {
 const activityTypes = [
   { value: "memorization", label: "Memorization", icon: BookOpen, color: "bg-blue-500" },
   { value: "revision", label: "Revision", icon: Star, color: "bg-green-500" },
-  { value: "evaluation", label: "Evaluation", icon: Award, color: "bg-orange-500" },
 ]
 
 // Surah list for reference
@@ -233,9 +232,24 @@ type TeacherIndexProps = {
     class_level: string
     current_hifz_in_juz: string
   }>
+  recent_activities: Array<{
+    id: string
+    activity_type: string
+    activity_grade: string
+    surah_name: string
+    verse_from: number
+    verse_to: number
+    juz: number | null
+    notes: string | null
+    created_at: string
+    student: {
+      id: string
+      name: string
+    }
+  }>
 }
 
-export default function TeacherIndex({ students }: TeacherIndexProps) {
+export default function TeacherIndex({ students, recent_activities }: TeacherIndexProps) {
   const [selectedStudent, setSelectedStudent] = useState<string>("")
   const [activityType, setActivityType] = useState<string>("")
   const [isRecording, setIsRecording] = useState(false)
@@ -499,12 +513,14 @@ export default function TeacherIndex({ students }: TeacherIndexProps) {
               activityDetails={activityDetails}
               setActivityDetails={setActivityDetails}
               handleSaveActivity={handleSaveActivity}
+              selectedStudent={selectedStudent}
             />
 
             {/* Recent Activities for Selected Student */}
             <RecentActivities
               currentStudent={currentStudent}
               activityTypes={activityTypes}
+              recentActivities={recent_activities}
             />
           </div>
         </div>
