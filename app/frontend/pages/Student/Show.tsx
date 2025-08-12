@@ -62,16 +62,51 @@ interface Student {
   updated_at: string
 }
 
+// Activity type from backend
+interface Activity {
+  id: number
+  activity: string
+  time: string
+  type: string
+  date: string
+  created_at: string
+}
+
+// Monthly progress data
+interface MonthlyProgress {
+  month: string
+  completed: number
+}
+
+// Grade distribution data
+interface GradeDistribution {
+  name: string
+  value: number
+  color: string
+}
+
+// Type distribution data
+interface TypeDistribution {
+  name: string
+  value: number
+  color: string
+}
+
 // Generate daily submissions data for date range
-const generateDailySubmissions = (startDate: Date, endDate: Date) => {
+const generateDailySubmissions = (startDate: Date, endDate: Date, activities: Activity[]) => {
   const data = []
   const currentDate = new Date(startDate)
 
   while (currentDate <= endDate) {
+    const dateStr = format(currentDate, "yyyy-MM-dd")
+    const dayActivities = activities.filter(activity => 
+      activity.date === dateStr
+    ).length
+
     data.push({
       date: format(currentDate, "dd/MM"),
-      fullDate: format(currentDate, "yyyy-MM-dd"),
-      submissions: Math.floor(Math.random() * 30) + 20, // Random data between 20-50
+      fullDate: dateStr,
+      submissions: dayActivities,
     })
     currentDate.setDate(currentDate.getDate() + 1)
   }
@@ -79,53 +114,36 @@ const generateDailySubmissions = (startDate: Date, endDate: Date) => {
   return data
 }
 
-// Juz distribution (30 Juz total)
-const juzDistribution = [
-  { name: "Juz 1-5", value: 25, color: "#3b82f6" },
-  { name: "Juz 6-10", value: 30, color: "#10b981" },
-  { name: "Juz 11-15", value: 35, color: "#f59e0b" },
-  { name: "Juz 16-20", value: 28, color: "#ef4444" },
-  { name: "Juz 21-25", value: 22, color: "#8b5cf6" },
-  { name: "Juz 26-30", value: 16, color: "#06b6d4" },
-]
-
 // Student specific data
-const getStudentData = (student: Student, startDate: Date, endDate: Date) => {
+const getStudentData = (student: Student, recent_activities: Activity[], startDate: Date, endDate: Date) => {
   if (!student) return null
 
   return {
-    dailySubmissions: generateDailySubmissions(startDate, endDate).map((item) => ({
-      ...item,
-      submissions: Math.floor(Math.random() * 5) + 1, // 1-6 for individual student
-    })),
-    progressData: [
-      { month: "Jan", completed: 8 },
-      { month: "Feb", completed: 9 },
-      { month: "Mar", completed: 11 },
-      { month: "Apr", completed: 12 },
-      { month: "Mei", completed: 14 },
-      { month: "Jun", completed: parseInt(student.current_hifz_in_juz) || 0 },
-    ],
-    recentActivities: [
-      { activity: "Menyelesaikan Al-Baqarah ayat 1-10", time: "2 jam lalu", type: "hafalan" },
-      { activity: "Muroja'ah Ali Imran ayat 50-75", time: "1 hari lalu", type: "muroja" },
-      { activity: "Setoran baru An-Nisa ayat 1-5", time: "2 hari lalu", type: "setoran" },
-      { activity: "Menyelesaikan Juz 14", time: "3 hari lalu", type: "completion" },
-    ],
+    dailySubmissions: generateDailySubmissions(startDate, endDate, recent_activities),
+    recentActivities: recent_activities,
   }
 }
 
 interface StudentShowProps {
   student: Student // The actual student data object from Rails controller
+  recent_activities: Activity[] // Recent activities from backend
+  total_activities: number // Total count of activities
+  monthly_progress: MonthlyProgress[] // Monthly progress data
+  grade_distribution: GradeDistribution[] // Grade distribution data
+  type_distribution: TypeDistribution[] // Activity type distribution data
 }
 
-export default function StudentShow({ student }: StudentShowProps) {
+export default function StudentShow({ student, recent_activities, total_activities, monthly_progress, grade_distribution, type_distribution }: StudentShowProps) {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
     from: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 7 days ago
     to: new Date(),
   })
 
-  const studentData = student ? getStudentData(student, dateRange.from, dateRange.to) : null
+  const studentData = student ? getStudentData(student, recent_activities, dateRange.from, dateRange.to) : null
+
+  // Calculate today's submissions
+  const todayStr = format(new Date(), "yyyy-MM-dd")
+  const todaySubmissions = recent_activities.filter(activity => activity.date === todayStr).length
 
   // Helper function to get avatar URL
   const getAvatarUrl = (avatar?: string): string => {
@@ -281,9 +299,9 @@ export default function StudentShow({ student }: StudentShowProps) {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                3 <span className="text-lg font-normal text-muted-foreground">Verses</span>
+                {todaySubmissions} <span className="text-lg font-normal text-muted-foreground">Activities</span>
               </div>
-              <p className="text-xs text-muted-foreground">From selected period</p>
+              <p className="text-xs text-muted-foreground">Submissions today</p>
             </CardContent>
           </Card>
 
@@ -299,128 +317,93 @@ export default function StudentShow({ student }: StudentShowProps) {
           </Card>
         </div>
 
-        {/* Charts Section - Hidden on mobile */}
-        <div className="hidden md:grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Daily Submissions Chart with Date Range */}
-          <Card className="col-span-2 border-gray-200/60 shadow-lg">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <CalendarIcon className="h-5 w-5" />
-                    Daily Submissions
-                  </CardTitle>
-                  <CardDescription>{student?.name}'s daily memorization submissions</CardDescription>
-                </div>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm" className="cursor-pointer border-gray-200/60">
-                      <CalendarIcon className="h-4 w-4 mr-2" />
-                      {format(dateRange.from, "dd MMM", { locale: id })} -{" "}
-                      {format(dateRange.to, "dd MMM", { locale: id })}
-                      <ChevronDown className="h-4 w-4 ml-2" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 border-gray-200/60" align="end">
-                    <div className="p-4 space-y-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Start Date</label>
-                        <Calendar
-                          mode="single"
-                          selected={dateRange.from}
-                          onSelect={(date) => date && setDateRange((prev) => ({ ...prev, from: date }))}
-                          locale={id}
-                          className="border-gray-200/60"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">End Date</label>
-                        <Calendar
-                          mode="single"
-                          selected={dateRange.to}
-                          onSelect={(date) => date && setDateRange((prev) => ({ ...prev, to: date }))}
-                          locale={id}
-                          className="border-gray-200/60"
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="cursor-pointer border-gray-200/60"
-                          onClick={() =>
-                            setDateRange({
-                              from: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
-                              to: new Date(),
-                            })
-                          }
-                        >
-                          7 Days
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="cursor-pointer border-gray-200/60"
-                          onClick={() =>
-                            setDateRange({
-                              from: new Date(Date.now() - 29 * 24 * 60 * 60 * 1000),
-                              to: new Date(),
-                            })
-                          }
-                        >
-                          30 Days
-                        </Button>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+        {/* Daily Submissions Chart - Full Width, Hidden on mobile */}
+        <Card className="hidden md:block border-gray-200/60 shadow-lg">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <CalendarIcon className="h-5 w-5" />
+                  Daily Submissions
+                </CardTitle>
+                <CardDescription>{student?.name}'s daily memorization submissions</CardDescription>
               </div>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={studentData?.dailySubmissions}>
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="submissions" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Juz Distribution */}
-          <Card className="border-gray-200/60 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                Progress per Juz
-              </CardTitle>
-              <CardDescription>Memorization distribution by juz</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={juzDistribution}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {juzDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="cursor-pointer border-gray-200/60">
+                    <CalendarIcon className="h-4 w-4 mr-2" />
+                    {format(dateRange.from, "dd MMM", { locale: id })} -{" "}
+                    {format(dateRange.to, "dd MMM", { locale: id })}
+                    <ChevronDown className="h-4 w-4 ml-2" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 border-gray-200/60" align="end">
+                  <div className="p-4 space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Start Date</label>
+                      <Calendar
+                        mode="single"
+                        selected={dateRange.from}
+                        onSelect={(date) => date && setDateRange((prev) => ({ ...prev, from: date }))}
+                        locale={id}
+                        className="border-gray-200/60"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">End Date</label>
+                      <Calendar
+                        mode="single"
+                        selected={dateRange.to}
+                        onSelect={(date) => date && setDateRange((prev) => ({ ...prev, to: date }))}
+                        locale={id}
+                        className="border-gray-200/60"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="cursor-pointer border-gray-200/60"
+                        onClick={() =>
+                          setDateRange({
+                            from: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+                            to: new Date(),
+                          })
+                        }
+                      >
+                        7 Days
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="cursor-pointer border-gray-200/60"
+                        onClick={() =>
+                          setDateRange({
+                            from: new Date(Date.now() - 29 * 24 * 60 * 60 * 1000),
+                            to: new Date(),
+                          })
+                        }
+                      >
+                        30 Days
+                      </Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={studentData?.dailySubmissions}>
+                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="submissions" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
         {/* Progress Chart - Hidden on mobile */}
         <Card className="hidden md:block border-gray-200/60 shadow-lg">
@@ -429,21 +412,126 @@ export default function StudentShow({ student }: StudentShowProps) {
               <TrendingUp className="h-5 w-5" />
               Monthly Progress
             </CardTitle>
-            <CardDescription>{student?.name}'s monthly memorization progress (cumulative)</CardDescription>
+            <CardDescription>
+              {student?.name}'s Quran memorization progress over time (starting from join date: {student?.date_joined})
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={studentData?.progressData}>
+              <LineChart data={monthly_progress}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                 <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
+                <YAxis domain={[0, 30]} />
+                <Tooltip 
+                  formatter={(value, name) => [`${value} Juz`, name]}
+                  labelFormatter={(label) => `Month: ${label}`}
+                />
                 <Legend />
-                <Line type="monotone" dataKey="completed" stroke="#10b981" strokeWidth={3} name="Juz Completed" />
+                <Line 
+                  type="monotone" 
+                  dataKey="completed" 
+                  stroke="#10b981" 
+                  strokeWidth={3} 
+                  name="Juz Completed"
+                  dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
+
+        {/* Pie Charts Section - Side by Side, Hidden on mobile */}
+        <div className="hidden md:grid gap-6 md:grid-cols-2">
+          {/* Activity Grade Distribution */}
+          <Card className="border-gray-200/60 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="h-5 w-5" />
+                Performance Distribution
+              </CardTitle>
+              <CardDescription>Quality of memorization activities</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {grade_distribution && grade_distribution.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={grade_distribution}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {grade_distribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value, name) => [`${value} activities`, name]}
+                      labelFormatter={(label) => `Grade: ${label}`}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-center">
+                  <div>
+                    <Award className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No performance data available</p>
+                    <p className="text-sm text-muted-foreground">Data will appear when activities are graded</p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Activity Type Distribution */}
+          <Card className="border-gray-200/60 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                Activity Types
+              </CardTitle>
+              <CardDescription>Memorization vs Revision balance</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {type_distribution && type_distribution.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={type_distribution}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={8}
+                      dataKey="value"
+                    >
+                      {type_distribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value, name) => [`${value} activities`, name]}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-center">
+                  <div>
+                    <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No activity data available</p>
+                    <p className="text-sm text-muted-foreground">Data will appear when activities are recorded</p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Bottom Section */}
         <div className="grid gap-6 md:grid-cols-2">
@@ -485,7 +573,7 @@ export default function StudentShow({ student }: StudentShowProps) {
                   <div className="text-sm text-muted-foreground">Pages Memorized</div>
                 </div>
                 <div className="text-center p-4 bg-orange-50 rounded-lg sm:col-span-2 lg:col-span-2">
-                  <div className="text-2xl font-bold text-orange-600">22</div>
+                  <div className="text-2xl font-bold text-orange-600">{total_activities}</div>
                   <div className="text-sm text-muted-foreground">Total Submissions</div>
                 </div>
               </div>
@@ -506,35 +594,34 @@ export default function StudentShow({ student }: StudentShowProps) {
                 <div key={index} className="flex items-start space-x-3">
                   <div
                     className={`flex h-8 w-8 items-center justify-center rounded-full text-white text-xs ${
-                      activity.type === "hafalan"
+                      activity.type === "memorization"
                         ? "bg-blue-500"
-                        : activity.type === "muroja"
+                        : activity.type === "revision"
                           ? "bg-green-500"
-                          : activity.type === "setoran"
-                            ? "bg-orange-500"
-                            : activity.type === "completion"
-                              ? "bg-purple-500"
-                              : "bg-gray-500"
+                          : "bg-gray-500"
                     }`}
                   >
-                    {activity.type === "hafalan" ? (
+                    {activity.type === "memorization" ? (
                       <BookOpen className="h-4 w-4" />
-                    ) : activity.type === "muroja" ? (
+                    ) : activity.type === "revision" ? (
                       <Star className="h-4 w-4" />
-                    ) : activity.type === "setoran" ? (
-                      <CalendarIcon className="h-4 w-4" />
-                    ) : activity.type === "completion" ? (
-                      <Award className="h-4 w-4" />
                     ) : (
                       <Target className="h-4 w-4" />
                     )}
                   </div>
                   <div className="flex-1 space-y-1">
-                    <p className="text-xs text-muted-foreground">{activity.activity}</p>
+                    <p className="text-sm">{activity.activity}</p>
                     <p className="text-xs text-muted-foreground">{activity.time}</p>
                   </div>
                 </div>
               ))}
+              {(!studentData?.recentActivities || studentData.recentActivities.length === 0) && (
+                <div className="text-center py-8">
+                  <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">No recent activities found</p>
+                  <p className="text-sm text-muted-foreground">Activities will appear here when the student starts memorizing</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

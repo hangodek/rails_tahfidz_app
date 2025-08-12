@@ -28,14 +28,6 @@ class ActivitiesController < ApplicationController
   end
 
   def create_activity_params
-    params.require(:activity).permit(
-      :activity_type,
-      :activity_grade,
-      :surah_name,
-      :verse_from,
-      :verse_to,
-      :juz,
-      :notes
-    )
+    params.expect(activity: [ :activity_type, :activity_grade, :surah_name, :verse_from, :verse_to, :juz, :notes ])
   end
 end
