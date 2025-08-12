@@ -1,15 +1,12 @@
 class Activity < ApplicationRecord
-  has_one_attached :recording
-
   belongs_to :student
 
-  enum activity_type: {
+  enum :activity_type, {
     memorization: 0,
-    revision: 1,
-    evaluation: 2
+    revision: 1
   }
 
-  enum evaluation: {
+  enum :activity_grade, {
     excellent: 0,
     good: 1,
     fair: 2,
