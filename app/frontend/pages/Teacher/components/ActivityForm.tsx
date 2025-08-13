@@ -15,8 +15,8 @@ interface ActivityType {
 
 interface ActivityDetails {
   surah: string
-  ayatFrom: string
-  ayatTo: string
+  pageFrom: string
+  pageTo: string
   juz: string
   notes: string
   evaluation: string
@@ -31,6 +31,13 @@ interface ActivityFormProps {
   setActivityDetails: (details: ActivityDetails | ((prev: ActivityDetails) => ActivityDetails)) => void
   handleSaveActivity: () => void
   selectedStudent: string
+  currentStudent?: {
+    id: string
+    name: string
+    class_level: string
+    current_hifz_in_juz: string
+    current_hifz_in_pages: string
+  }
 }
 
 // Map frontend evaluation values to backend enum values
@@ -50,22 +57,60 @@ export function ActivityForm({
   setActivityDetails,
   handleSaveActivity,
   selectedStudent,
+  currentStudent,
 }: ActivityFormProps) {
   
+  const calculateNewProgress = () => {
+    if (!activityDetails.juz || !activityDetails.pageTo) return null;
+    
+    const juz = parseInt(activityDetails.juz);
+    const pageTo = parseInt(activityDetails.pageTo);
+    
+    // For memorization activities, the new progress is simply the page they completed up to
+    return { newJuz: juz, newPages: pageTo };
+  };
+
+  const validateMemorizationProgress = () => {
+    if (activityType !== 'memorization' || !currentStudent) return true;
+    
+    const newProgress = calculateNewProgress();
+    if (!newProgress) return true;
+    
+    const currentJuz = parseInt(currentStudent.current_hifz_in_juz) || 0;
+    const currentPages = parseInt(currentStudent.current_hifz_in_pages) || 0;
+    const { newJuz, newPages } = newProgress;
+    
+    // New progress must be greater than current progress
+    if (newJuz < currentJuz || (newJuz === currentJuz && newPages <= currentPages)) {
+      return false;
+    }
+    
+    return true;
+  };
+  
   const handleSubmit = () => {
-    if (!selectedStudent || !activityType || !activityDetails.surah || !activityDetails.ayatFrom || !activityDetails.ayatTo) {
+    if (!selectedStudent || !activityType || !activityDetails.surah || !activityDetails.pageFrom || !activityDetails.pageTo) {
       alert('Please fill in all required fields');
       return;
     }
+
+    if (!validateMemorizationProgress()) {
+      alert('New memorization progress must be greater than current progress');
+      return;
+    }
+
+    const newProgress = calculateNewProgress();
 
     const activityData = {
       activity_type: activityType,
       activity_grade: evaluationMapping[activityDetails.evaluation as keyof typeof evaluationMapping] || 'excellent',
       surah_name: activityDetails.surah,
-      verse_from: parseInt(activityDetails.ayatFrom),
-      verse_to: parseInt(activityDetails.ayatTo),
+      page_from: parseInt(activityDetails.pageFrom),
+      page_to: parseInt(activityDetails.pageTo),
       juz: activityDetails.juz ? parseInt(activityDetails.juz) : null,
-      notes: activityDetails.notes || ''
+      notes: activityDetails.notes || '',
+      new_hifz_juz: activityType === 'memorization' && newProgress ? newProgress.newJuz : null,
+      new_hifz_pages: activityType === 'memorization' && newProgress ? newProgress.newPages : null
     };
 
     router.post(`/students/${selectedStudent}/activities`, {
@@ -75,8 +120,8 @@ export function ActivityForm({
         // Reset form
         setActivityDetails({
           surah: "",
-          ayatFrom: "",
-          ayatTo: "",
+          pageFrom: "",
+          pageTo: "",
           juz: "",
           notes: "",
           evaluation: "",
@@ -148,31 +193,33 @@ export function ActivityForm({
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-2">
-                    <Label className="text-xs sm:text-sm">Verse From <span className="text-red-500">*</span></Label>
+                    <Label className="text-xs sm:text-sm">Page From <span className="text-red-500">*</span></Label>
                     <Input
                       type="number"
                       placeholder="1"
-                      value={activityDetails.ayatFrom}
-                      onChange={(e) => setActivityDetails((prev) => ({ ...prev, ayatFrom: e.target.value }))}
+                      value={activityDetails.pageFrom}
+                      onChange={(e) => setActivityDetails((prev) => ({ ...prev, pageFrom: e.target.value }))}
                       className="border-gray-200/60 text-sm"
                       min="1"
+                      max="604"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs sm:text-sm">Verse To <span className="text-red-500">*</span></Label>
+                    <Label className="text-xs sm:text-sm">Page To <span className="text-red-500">*</span></Label>
                     <Input
                       type="number"
                       placeholder="10"
-                      value={activityDetails.ayatTo}
-                      onChange={(e) => setActivityDetails((prev) => ({ ...prev, ayatTo: e.target.value }))}
+                      value={activityDetails.pageTo}
+                      onChange={(e) => setActivityDetails((prev) => ({ ...prev, pageTo: e.target.value }))}
                       className="border-gray-200/60 text-sm"
                       min="1"
+                      max="604"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Juz</Label>
+                  <Label>Juz {activityType === "memorization" && <span className="text-red-500">*</span>}</Label>
                   <Select
                     value={activityDetails.juz}
                     onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, juz: value }))}
@@ -189,6 +236,22 @@ export function ActivityForm({
                     </SelectContent>
                   </Select>
                 </div>
+
+                {activityType === "memorization" && currentStudent && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">
+                      Current Progress: Juz {currentStudent.current_hifz_in_juz}, {currentStudent.current_hifz_in_pages} pages
+                    </Label>
+                    {activityDetails.juz && activityDetails.pageTo && (() => {
+                      const newProgress = calculateNewProgress();
+                      return newProgress ? (
+                        <div className="text-sm text-muted-foreground">
+                          New Progress will be: Juz {newProgress.newJuz}, {newProgress.newPages} pages
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
+                )}
               </>
             )}
 
@@ -223,7 +286,16 @@ export function ActivityForm({
             <Button 
               onClick={handleSubmit} 
               className="w-full cursor-pointer text-sm sm:text-base"
-              disabled={!selectedStudent || !activityType || !activityDetails.surah || !activityDetails.ayatFrom || !activityDetails.ayatTo || !activityDetails.evaluation}
+              disabled={
+                !selectedStudent || 
+                !activityType || 
+                !activityDetails.surah || 
+                !activityDetails.pageFrom || 
+                !activityDetails.pageTo || 
+                !activityDetails.evaluation ||
+                (activityType === 'memorization' && !activityDetails.juz) ||
+                !validateMemorizationProgress()
+              }
             >
               <Save className="h-4 w-4 mr-2" />
               <span className="hidden sm:inline">Save Activity</span>

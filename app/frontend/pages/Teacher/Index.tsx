@@ -4,9 +4,6 @@ import { useState, useRef, useEffect } from "react"
 import {
   BookOpen,
   Star,
-  Calendar,
-  Award,
-  Volume2,
 } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
 import {
@@ -231,14 +228,15 @@ type TeacherIndexProps = {
     name: string
     class_level: string
     current_hifz_in_juz: string
+    current_hifz_in_pages: string
   }>
   recent_activities: Array<{
     id: string
     activity_type: string
     activity_grade: string
     surah_name: string
-    verse_from: number
-    verse_to: number
+    page_from: number
+    page_to: number
     juz: number | null
     notes: string | null
     created_at: string
@@ -264,8 +262,8 @@ export default function TeacherIndex({ students, recent_activities }: TeacherInd
   // Activity form fields
   const [activityDetails, setActivityDetails] = useState({
     surah: "",
-    ayatFrom: "",
-    ayatTo: "",
+    pageFrom: "",
+    pageTo: "",
     juz: "",
     notes: "",
     evaluation: "",
@@ -427,8 +425,8 @@ export default function TeacherIndex({ students, recent_activities }: TeacherInd
       // Reset form
       setActivityDetails({
         surah: "",
-        ayatFrom: "",
-        ayatTo: "",
+        pageFrom: "",
+        pageTo: "",
         juz: "",
         notes: "",
         evaluation: "",
@@ -514,6 +512,7 @@ export default function TeacherIndex({ students, recent_activities }: TeacherInd
               setActivityDetails={setActivityDetails}
               handleSaveActivity={handleSaveActivity}
               selectedStudent={selectedStudent}
+              currentStudent={currentStudent}
             />
 
             {/* Recent Activities for Selected Student */}

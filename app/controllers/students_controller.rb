@@ -86,11 +86,11 @@ class StudentsController < ApplicationController
   def format_activity_description(activity)
     case activity.activity_type
     when "memorization"
-      "Memorized #{activity.surah_name} verses #{activity.verse_from}-#{activity.verse_to}"
+      "Memorized #{activity.surah_name} pages #{activity.page_from}-#{activity.page_to}"
     when "revision"
-      "Revised #{activity.surah_name} verses #{activity.verse_from}-#{activity.verse_to}"
+      "Revised #{activity.surah_name} pages #{activity.page_from}-#{activity.page_to}"
     else
-      "#{activity.activity_type.humanize} #{activity.surah_name} verses #{activity.verse_from}-#{activity.verse_to}"
+      "#{activity.activity_type.humanize} #{activity.surah_name} pages #{activity.page_from}-#{activity.page_to}"
     end
   end
 
