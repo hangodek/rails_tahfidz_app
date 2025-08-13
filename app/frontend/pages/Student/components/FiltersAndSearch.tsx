@@ -55,9 +55,9 @@ export function FiltersAndSearch({
                 </SelectTrigger>
                 <SelectContent className="border-gray-200/60">
                   <SelectItem className="cursor-pointer" value="all">All Classes</SelectItem>
-                  <SelectItem className="cursor-pointer"value="Kelas A">Class A</SelectItem>
-                  <SelectItem className="cursor-pointer" value="Kelas B">Class B</SelectItem>
-                  <SelectItem className="cursor-pointer" value="Kelas C">Class C</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Class A">Class A</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Class B">Class B</SelectItem>
+                  <SelectItem className="cursor-pointer" value="Class C">Class C</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
