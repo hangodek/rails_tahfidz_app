@@ -6,16 +6,19 @@ import { Button } from "@/components/ui/button"
 import { Award, User } from "lucide-react"
 import { router } from "@inertiajs/react"
 
-// Sample students data (would come from Rails props)
-const students = [
-  { id: "1", name: "Ahmad Fauzi", currentJuz: 15, progress: 85, avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "2", name: "Fatimah Zahra", currentJuz: 14, progress: 82, avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "3", name: "Muhammad Rizki", currentJuz: 13, progress: 78, avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "4", name: "Aisyah Putri", currentJuz: 12, progress: 75, avatar: "/placeholder.svg?height=32&width=32" },
-  { id: "5", name: "Abdullah Malik", currentJuz: 11, progress: 70, avatar: "/placeholder.svg?height=32&width=32" },
-]
+interface TopStudent {
+  id: string
+  name: string
+  current_juz: string
+  activity_count: number
+  progress: number
+}
 
-export function TopStudentsRanking() {
+interface TopStudentsRankingProps {
+  students: TopStudent[]
+}
+
+export function TopStudentsRanking({ students }: TopStudentsRankingProps) {
   return (
     <Card className="border-gray-200/60 shadow-lg">
       <CardHeader>
@@ -46,7 +49,7 @@ export function TopStudentsRanking() {
               <div className="flex items-center justify-between">
                 <p className="text-xs sm:text-sm font-medium truncate pr-2">{student.name}</p>
                 <Badge variant="secondary" className="text-xs flex-shrink-0">
-                  Juz {student.currentJuz}
+                  Juz {student.current_juz}
                 </Badge>
               </div>
               <Progress value={student.progress} className="h-1.5 sm:h-2" />

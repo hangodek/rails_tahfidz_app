@@ -1,7 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CalendarIcon, BookOpen, Star } from "lucide-react"
+import { CalendarIcon, BookOpen } from "lucide-react"
 
-export function StatsCards() {
+interface DashboardStats {
+  today_submissions: number
+  students_revising_today: number
+  students_memorizing_today: number
+  total_active_students: number
+}
+
+interface StatsCardsProps {
+  stats: DashboardStats
+}
+
+export function StatsCards({ stats }: StatsCardsProps) {
   return (
     <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
       <Card className="border-gray-200/60 shadow-lg">
@@ -11,7 +22,7 @@ export function StatsCards() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-blue-600">
-            67 <span className="text-lg font-normal text-blue-500">Submissions</span>
+            {stats.today_submissions} <span className="text-lg font-normal text-blue-500">Submissions</span>
           </div>
           <p className="text-xs text-muted-foreground">Student activities recorded by teachers</p>
         </CardContent>
@@ -24,7 +35,7 @@ export function StatsCards() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-green-600">
-            23<span className="text-lg font-normal text-green-500"> / 30</span>
+            {stats.students_revising_today}<span className="text-lg font-normal text-green-500"> / {stats.total_active_students}</span>
           </div>
           <p className="text-xs text-muted-foreground">Active students practicing review</p>
         </CardContent>
@@ -37,7 +48,7 @@ export function StatsCards() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-orange-600">
-            18<span className="text-lg font-normal text-orange-500"> / 30</span>
+            {stats.students_memorizing_today}<span className="text-lg font-normal text-orange-500"> / {stats.total_active_students}</span>
           </div>
           <p className="text-xs text-muted-foreground">Active students learning new verses</p>
         </CardContent>

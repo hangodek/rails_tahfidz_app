@@ -11,9 +11,54 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import { BarChart3 } from "lucide-react"
 
-type DashboardProps = {}
+interface DashboardStats {
+  today_submissions: number
+  students_revising_today: number
+  students_memorizing_today: number
+  total_active_students: number
+}
 
-export default function DashboardIndex({}: DashboardProps) {
+interface TopStudent {
+  id: string
+  name: string
+  current_juz: string
+  activity_count: number
+  progress: number
+}
+
+interface RecentActivity {
+  student: string
+  activity: string
+  time: string
+  type: string
+}
+
+interface DailySubmission {
+  date: string
+  submissions: number
+}
+
+interface JuzDistribution {
+  juz: string
+  students: number
+}
+
+interface DashboardProps {
+  user: any
+  stats: DashboardStats
+  top_students: TopStudent[]
+  recent_activities: RecentActivity[]
+  daily_submissions: DailySubmission[]
+  juz_distribution: JuzDistribution[]
+}
+
+export default function DashboardIndex({ 
+  stats, 
+  top_students, 
+  recent_activities, 
+  daily_submissions, 
+  juz_distribution 
+}: DashboardProps) {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <div className="flex flex-col space-y-4 sm:space-y-6 p-4 sm:p-6">
@@ -21,7 +66,7 @@ export default function DashboardIndex({}: DashboardProps) {
         <DashboardHeader />
 
         {/* Stats Cards */}
-        <StatsCards />
+        <StatsCards stats={stats} />
 
         {/* Mobile Chart Notice */}
         <div className="md:hidden">
@@ -43,10 +88,10 @@ export default function DashboardIndex({}: DashboardProps) {
         {/* Charts Section - Hidden on mobile, shown on tablet+ */}
         <div className="hidden md:flex md:flex-col lg:grid gap-6 lg:grid-cols-3">
           {/* Daily Pages Chart with Date Range */}
-          <DailySubmissionsChart />
+          <DailySubmissionsChart data={daily_submissions} />
 
           {/* Juz Distribution */}
-          <JuzDistributionChart />
+          <JuzDistributionChart data={juz_distribution} />
         </div>
 
         {/* Progress Chart - Hidden on mobile, shown on tablet+ */}
@@ -57,10 +102,10 @@ export default function DashboardIndex({}: DashboardProps) {
         {/* Bottom Section */}
         <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
           {/* Top Students Ranking */}
-          <TopStudentsRanking />
+          <TopStudentsRanking students={top_students} />
 
           {/* Recent Activities */}
-          <RecentActivities />
+          <RecentActivities activities={recent_activities} />
         </div>
       </div>
     </div>
