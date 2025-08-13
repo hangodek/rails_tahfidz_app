@@ -24,6 +24,7 @@ interface TopStudent {
   current_juz: string
   activity_count: number
   progress: number
+  avatar?: string
 }
 
 interface RecentActivity {

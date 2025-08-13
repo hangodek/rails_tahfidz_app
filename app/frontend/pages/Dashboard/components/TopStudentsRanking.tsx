@@ -12,6 +12,7 @@ interface TopStudent {
   current_juz: string
   activity_count: number
   progress: number
+  avatar?: string
 }
 
 interface TopStudentsRankingProps {
@@ -41,7 +42,8 @@ export function TopStudentsRanking({ students }: TopStudentsRankingProps) {
                   {student.name
                     .split(" ")
                     .map((n) => n[0])
-                    .join("")}
+                    .join("")
+                    .toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </div>

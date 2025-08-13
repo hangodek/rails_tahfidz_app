@@ -31,7 +31,8 @@ class DashboardController < ApplicationController
                              name: student.name,
                              current_juz: student.current_hifz_in_juz,
                              activity_count: student.activity_count,
-                             progress: calculate_progress(student.current_hifz_in_juz.to_i)
+                             progress: calculate_progress(student.current_hifz_in_juz.to_i),
+                             avatar: student.avatar.attached? ? url_for(student.avatar) : nil
                            }
                          end
 
@@ -49,8 +50,11 @@ class DashboardController < ApplicationController
                                 }
                               end
 
-    # Daily submissions for chart (last 7 days)
-    daily_submissions = (6.days.ago.to_date..Date.current).map do |date|
+    # Daily submissions for chart (configurable date range)
+    from_date = params[:from]&.to_date || 6.days.ago.to_date
+    to_date = params[:to]&.to_date || Date.current
+    
+    daily_submissions = (from_date..to_date).map do |date|
       {
         date: date.strftime("%m/%d"),
         submissions: Activity.where(created_at: date.all_day).count
