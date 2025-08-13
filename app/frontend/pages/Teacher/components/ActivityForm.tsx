@@ -14,7 +14,8 @@ interface ActivityType {
 }
 
 interface ActivityDetails {
-  surah: string
+  surahFrom: string
+  surahTo: string
   pageFrom: string
   pageTo: string
   juz: string
@@ -37,6 +38,7 @@ interface ActivityFormProps {
     class_level: string
     current_hifz_in_juz: string
     current_hifz_in_pages: string
+    current_hifz_in_surah: string
   }
 }
 
@@ -89,7 +91,7 @@ export function ActivityForm({
   };
   
   const handleSubmit = () => {
-    if (!selectedStudent || !activityType || !activityDetails.surah || !activityDetails.pageFrom || !activityDetails.pageTo) {
+    if (!selectedStudent || !activityType || !activityDetails.surahFrom || !activityDetails.surahTo || !activityDetails.pageFrom || !activityDetails.pageTo) {
       alert('Please fill in all required fields');
       return;
     }
@@ -104,13 +106,15 @@ export function ActivityForm({
     const activityData = {
       activity_type: activityType,
       activity_grade: evaluationMapping[activityDetails.evaluation as keyof typeof evaluationMapping] || 'excellent',
-      surah_name: activityDetails.surah,
+      surah_from: activityDetails.surahFrom,
+      surah_to: activityDetails.surahTo,
       page_from: parseInt(activityDetails.pageFrom),
       page_to: parseInt(activityDetails.pageTo),
       juz: activityDetails.juz ? parseInt(activityDetails.juz) : null,
       notes: activityDetails.notes || '',
       new_hifz_juz: activityType === 'memorization' && newProgress ? newProgress.newJuz : null,
-      new_hifz_pages: activityType === 'memorization' && newProgress ? newProgress.newPages : null
+      new_hifz_pages: activityType === 'memorization' && newProgress ? newProgress.newPages : null,
+      new_hifz_surah: activityType === 'memorization' ? activityDetails.surahTo : null
     };
 
     router.post(`/students/${selectedStudent}/activities`, {
@@ -119,7 +123,8 @@ export function ActivityForm({
       onSuccess: () => {
         // Reset form
         setActivityDetails({
-          surah: "",
+          surahFrom: "",
+          surahTo: "",
           pageFrom: "",
           pageTo: "",
           juz: "",
@@ -172,23 +177,43 @@ export function ActivityForm({
               activityType === "revision" ||
               activityType === "evaluation") && (
               <>
-                <div className="space-y-2">
-                  <Label>Surah <span className="text-red-500">*</span></Label>
-                  <Select
-                    value={activityDetails.surah}
-                    onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, surah: value }))}
-                  >
-                    <SelectTrigger className="border-gray-200/60 cursor-pointer">
-                      <SelectValue placeholder="Select surah..." />
-                    </SelectTrigger>
-                    <SelectContent className="border-gray-200/60">
-                      {surahList.map((surah, index) => (
-                        <SelectItem key={index} value={surah} className="cursor-pointer">
-                          {index + 1}. {surah}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
+                    <Label className="text-xs sm:text-sm">Surah From <span className="text-red-500">*</span></Label>
+                    <Select
+                      value={activityDetails.surahFrom}
+                      onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, surahFrom: value }))}
+                    >
+                      <SelectTrigger className="border-gray-200/60 cursor-pointer">
+                        <SelectValue placeholder="Select surah..." />
+                      </SelectTrigger>
+                      <SelectContent className="border-gray-200/60">
+                        {surahList.map((surah, index) => (
+                          <SelectItem key={index} value={surah} className="cursor-pointer">
+                            {index + 1}. {surah}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs sm:text-sm">Surah To <span className="text-red-500">*</span></Label>
+                    <Select
+                      value={activityDetails.surahTo}
+                      onValueChange={(value) => setActivityDetails((prev) => ({ ...prev, surahTo: value }))}
+                    >
+                      <SelectTrigger className="border-gray-200/60 cursor-pointer">
+                        <SelectValue placeholder="Select surah..." />
+                      </SelectTrigger>
+                      <SelectContent className="border-gray-200/60">
+                        {surahList.map((surah, index) => (
+                          <SelectItem key={index} value={surah} className="cursor-pointer">
+                            {index + 1}. {surah}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -240,13 +265,13 @@ export function ActivityForm({
                 {activityType === "memorization" && currentStudent && (
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">
-                      Current Progress: Juz {currentStudent.current_hifz_in_juz}, {currentStudent.current_hifz_in_pages} pages
+                      Current Progress: {currentStudent.current_hifz_in_surah}, Juz {currentStudent.current_hifz_in_juz}, {currentStudent.current_hifz_in_pages} pages
                     </Label>
                     {activityDetails.juz && activityDetails.pageTo && (() => {
                       const newProgress = calculateNewProgress();
                       return newProgress ? (
                         <div className="text-sm text-muted-foreground">
-                          New Progress will be: Juz {newProgress.newJuz}, {newProgress.newPages} pages
+                          New Progress will be: {activityDetails.surahTo}, Juz {newProgress.newJuz}, {newProgress.newPages} pages
                         </div>
                       ) : null;
                     })()}
@@ -289,7 +314,8 @@ export function ActivityForm({
               disabled={
                 !selectedStudent || 
                 !activityType || 
-                !activityDetails.surah || 
+                !activityDetails.surahFrom || 
+                !activityDetails.surahTo || 
                 !activityDetails.pageFrom || 
                 !activityDetails.pageTo || 
                 !activityDetails.evaluation ||

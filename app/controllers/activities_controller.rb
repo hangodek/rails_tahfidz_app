@@ -10,15 +10,21 @@ class ActivitiesController < ApplicationController
       if @activity.memorization? && params.dig(:activity, :new_hifz_juz).present? && params.dig(:activity, :new_hifz_pages).present?
         new_juz = params.dig(:activity, :new_hifz_juz).to_i
         new_pages = params.dig(:activity, :new_hifz_pages).to_i
+        new_surah = params.dig(:activity, :new_hifz_surah)
         current_juz = @student.current_hifz_in_juz.to_i
         current_pages = @student.current_hifz_in_pages.to_i
 
         # Only update if new progress is greater than current
         if new_juz > current_juz || (new_juz == current_juz && new_pages > current_pages)
-          @student.update!(
+          update_data = {
             current_hifz_in_juz: new_juz.to_s,
             current_hifz_in_pages: new_pages.to_s
-          )
+          }
+
+          # Update current surah if provided
+          update_data[:current_hifz_in_surah] = new_surah if new_surah.present?
+
+          @student.update!(update_data)
         end
       end
 
@@ -44,6 +50,6 @@ class ActivitiesController < ApplicationController
   end
 
   def create_activity_params
-    params.expect(activity: [ :activity_type, :activity_grade, :surah_name, :page_from, :page_to, :juz, :notes ])
+    params.expect(activity: [ :activity_type, :activity_grade, :surah_from, :surah_to, :page_from, :page_to, :juz, :notes ])
   end
 end

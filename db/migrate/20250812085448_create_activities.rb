@@ -6,7 +6,8 @@ class CreateActivities < ActiveRecord::Migration[8.0]
       t.integer :activity_type, null: false, default: 0
       t.integer :activity_grade, null: false, default: 0
 
-      t.string :surah_name, null: false
+      t.string :surah_from, null: false
+      t.string :surah_to, null: false
       t.integer :verse_from, null: false
       t.integer :verse_to, null: false
       t.integer :juz

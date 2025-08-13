@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_142907) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_13_074216) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -53,7 +53,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_142907) do
     t.integer "student_id", null: false
     t.integer "activity_type", default: 0, null: false
     t.integer "activity_grade", default: 0, null: false
-    t.string "surah_name", null: false
+    t.string "surah_from", null: false
+    t.string "surah_to", null: false
     t.integer "page_from", null: false
     t.integer "page_to", null: false
     t.integer "juz"
@@ -91,6 +92,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_142907) do
     t.date "date_joined", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "current_hifz_in_surah", default: "Al-Fatihah", null: false
   end
 
   create_table "users", force: :cascade do |t|

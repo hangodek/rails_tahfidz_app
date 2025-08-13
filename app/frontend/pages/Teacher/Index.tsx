@@ -229,12 +229,14 @@ type TeacherIndexProps = {
     class_level: string
     current_hifz_in_juz: string
     current_hifz_in_pages: string
+    current_hifz_in_surah: string
   }>
   recent_activities: Array<{
     id: string
     activity_type: string
     activity_grade: string
-    surah_name: string
+    surah_from: string
+    surah_to: string
     page_from: number
     page_to: number
     juz: number | null
@@ -261,7 +263,8 @@ export default function TeacherIndex({ students, recent_activities }: TeacherInd
 
   // Activity form fields
   const [activityDetails, setActivityDetails] = useState({
-    surah: "",
+    surahFrom: "",
+    surahTo: "",
     pageFrom: "",
     pageTo: "",
     juz: "",
@@ -424,7 +427,8 @@ export default function TeacherIndex({ students, recent_activities }: TeacherInd
 
       // Reset form
       setActivityDetails({
-        surah: "",
+        surahFrom: "",
+        surahTo: "",
         pageFrom: "",
         pageTo: "",
         juz: "",

@@ -79,18 +79,20 @@ class StudentsController < ApplicationController
 
   private
 
-  def student_params
-    params.expect(student: [ :name, :current_hifz_in_juz, :current_hifz_in_pages, :avatar, :class_level, :phone, :email, :status, :gender, :birth_place, :birth_date, :address, :father_name, :mother_name, :father_phone, :mother_phone, :date_joined ])
+  def create_student_params
+    params.expect(student: [ :name, :current_hifz_in_juz, :current_hifz_in_pages, :current_hifz_in_surah, :avatar, :class_level, :phone, :email, :status, :gender, :birth_place, :birth_date, :address, :father_name, :mother_name, :father_phone, :mother_phone, :date_joined ])
   end
 
   def format_activity_description(activity)
+    surah_display = activity.surah_from == activity.surah_to ? activity.surah_from : "#{activity.surah_from} - #{activity.surah_to}"
+
     case activity.activity_type
     when "memorization"
-      "Memorized #{activity.surah_name} pages #{activity.page_from}-#{activity.page_to}"
+      "Memorized #{surah_display} pages #{activity.page_from}-#{activity.page_to}"
     when "revision"
-      "Revised #{activity.surah_name} pages #{activity.page_from}-#{activity.page_to}"
+      "Revised #{surah_display} pages #{activity.page_from}-#{activity.page_to}"
     else
-      "#{activity.activity_type.humanize} #{activity.surah_name} pages #{activity.page_from}-#{activity.page_to}"
+      "#{activity.activity_type.humanize} #{surah_display} pages #{activity.page_from}-#{activity.page_to}"
     end
   end
 

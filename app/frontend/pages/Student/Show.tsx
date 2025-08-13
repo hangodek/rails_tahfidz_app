@@ -44,6 +44,7 @@ interface Student {
   name: string
   current_hifz_in_juz: string
   current_hifz_in_pages: string
+  current_hifz_in_surah: string
   avatar?: string
   class_level: string
   phone?: string
@@ -220,6 +221,7 @@ export default function StudentShow({ student, recent_activities, total_activiti
               </Avatar>
               <div className="flex-1 text-center sm:text-left">
                 <h2 className="text-xl sm:text-2xl font-bold">{student.name}</h2>
+                <p className="text-muted-foreground">Currently memorizing: {student.current_hifz_in_surah}</p>
                 <p className="text-muted-foreground">Juz {student.current_hifz_in_juz} of 30 Juz</p>
                 <div className="mt-2">
                   <div className="text-sm text-muted-foreground">{student.current_hifz_in_pages} pages memorized</div>
@@ -307,12 +309,12 @@ export default function StudentShow({ student, recent_activities, total_activiti
 
           <Card className="border-gray-200/60 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Current Juz</CardTitle>
+              <CardTitle className="text-sm font-medium">Current Progress</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">Juz {student?.current_hifz_in_juz || 0}</div>
-              <p className="text-xs text-muted-foreground">{student?.current_hifz_in_pages || 0} pages memorized</p>
+              <div className="text-2xl font-bold">{student?.current_hifz_in_surah}</div>
+              <p className="text-xs text-muted-foreground">Juz {student?.current_hifz_in_juz || 0} • {student?.current_hifz_in_pages || 0} pages memorized</p>
             </CardContent>
           </Card>
         </div>
@@ -563,16 +565,20 @@ export default function StudentShow({ student, recent_activities, total_activiti
               <CardDescription>Summary of {student?.name}'s achievements</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                  <div className="text-lg font-bold text-purple-600 truncate">{student?.current_hifz_in_surah}</div>
+                  <div className="text-sm text-muted-foreground">Current Surah</div>
+                </div>
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
                   <div className="text-2xl font-bold text-blue-600">{student?.current_hifz_in_juz}</div>
                   <div className="text-sm text-muted-foreground">Current Juz</div>
                 </div>
                 <div className="text-center p-4 bg-green-50 rounded-lg">
                   <div className="text-2xl font-bold text-green-600">{student?.current_hifz_in_pages}</div>
-                  <div className="text-sm text-muted-foreground">Pages Memorized</div>
+                  <div className="text-sm text-muted-foreground">Current Pages</div>
                 </div>
-                <div className="text-center p-4 bg-orange-50 rounded-lg sm:col-span-2 lg:col-span-2">
+                <div className="text-center p-4 bg-orange-50 rounded-lg">
                   <div className="text-2xl font-bold text-orange-600">{total_activities}</div>
                   <div className="text-sm text-muted-foreground">Total Submissions</div>
                 </div>

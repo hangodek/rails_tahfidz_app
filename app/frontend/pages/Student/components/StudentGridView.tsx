@@ -16,6 +16,7 @@ interface Student {
   name: string
   current_hifz_in_juz: string
   current_hifz_in_pages: string
+  current_hifz_in_surah: string
   avatar?: string
   class_level: string
   phone?: string
@@ -67,10 +68,13 @@ export function StudentGridView({ filteredStudents, getStatusBadge, handleSelect
             </div>
           </CardHeader>
           <CardContent className="space-y-3 sm:space-y-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 gap-2 text-sm">
               <div className="flex items-center gap-2">
                 <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
-                <span className="text-xs sm:text-sm">Juz {student.current_hifz_in_juz}</span>
+                <span className="text-xs sm:text-sm truncate">{student.current_hifz_in_surah}</span>
+              </div>
+              <div className="flex items-center gap-2 ml-5 sm:ml-6">
+                <span className="text-xs sm:text-sm text-muted-foreground">Juz {student.current_hifz_in_juz} • {student.current_hifz_in_pages} pages</span>
               </div>
             </div>
 

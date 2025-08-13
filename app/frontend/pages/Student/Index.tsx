@@ -17,6 +17,7 @@ interface Student {
   name: string
   current_hifz_in_juz: string
   current_hifz_in_pages: string
+  current_hifz_in_surah: string
   avatar?: string
   class_level: string
   phone?: string

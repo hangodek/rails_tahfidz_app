@@ -9,6 +9,7 @@ interface Student {
   name: string
   current_hifz_in_juz: string
   current_hifz_in_pages: string
+  current_hifz_in_surah: string
   avatar?: string
   class_level: string
   phone?: string
@@ -62,9 +63,9 @@ export function StudentListView({ filteredStudents, getStatusBadge, handleSelect
                 </div>
 
                 <div className="flex items-center justify-center space-x-2 sm:space-x-6">
-                  <div className="text-center hidden sm:block w-16">
-                    <div className="text-sm font-medium">Juz {student.current_hifz_in_juz}</div>
-                    <div className="text-xs text-muted-foreground">Current</div>
+                  <div className="text-center hidden sm:block w-24">
+                    <div className="text-sm font-medium truncate">{student.current_hifz_in_surah}</div>
+                    <div className="text-xs text-muted-foreground">Juz {student.current_hifz_in_juz}</div>
                   </div>
                   <div className="text-center w-16">
                     <div className="text-sm font-medium">{Math.round((parseInt(student.current_hifz_in_juz) || 0) / 30 * 100)}%</div>
@@ -86,7 +87,7 @@ export function StudentListView({ filteredStudents, getStatusBadge, handleSelect
               {/* Mobile-only additional info */}
               <div className="mt-2 sm:hidden">
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span className="w-16 text-left">Juz {student.current_hifz_in_juz}</span>
+                  <span className="w-32 text-left truncate">{student.current_hifz_in_surah} • Juz {student.current_hifz_in_juz}</span>
                   <span className="w-24 text-right">{student.birth_place}</span>
                 </div>
               </div>

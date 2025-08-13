@@ -19,7 +19,8 @@ interface Activity {
   id: string
   activity_type: string
   activity_grade: string
-  surah_name: string
+  surah_from: string
+  surah_to: string
   page_from: number
   page_to: number
   juz: number | null
@@ -85,7 +86,7 @@ export function RecentActivities({ currentStudent, activityTypes, recentActiviti
         ) : (
           studentActivities.map((activity) => {
             const activityType = activityTypes.find((t) => t.value === activity.activity_type)
-            const activityDescription = `${activityLabels[activity.activity_type as keyof typeof activityLabels]} ${activity.surah_name} pages ${activity.page_from}-${activity.page_to}`
+            const activityDescription = `${activityLabels[activity.activity_type as keyof typeof activityLabels]} ${activity.surah_from}${activity.surah_from !== activity.surah_to ? ` - ${activity.surah_to}` : ''} pages ${activity.page_from}-${activity.page_to}`
             
             return (
               <div key={activity.id} className="flex items-start space-x-2 sm:space-x-3">
