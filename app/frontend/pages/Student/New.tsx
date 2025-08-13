@@ -11,6 +11,7 @@ interface StudentFormData {
   name: string
   current_hifz_in_juz: string
   current_hifz_in_pages: string
+  current_hifz_in_surah: string
   avatar: File | null
   class_level: string
   phone: string
@@ -32,6 +33,7 @@ export default function CreateStudent() {
     name: "",
     current_hifz_in_juz: "0",
     current_hifz_in_pages: "0",
+    current_hifz_in_surah: "",
     avatar: null,
     class_level: "",
     phone: "",

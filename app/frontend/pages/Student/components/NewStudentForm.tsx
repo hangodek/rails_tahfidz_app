@@ -11,6 +11,7 @@ interface StudentFormData {
   name: string
   current_hifz_in_juz: string
   current_hifz_in_pages: string
+  current_hifz_in_surah: string
   avatar: File | null
   class_level: string
   phone: string
@@ -70,6 +71,29 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
   const classes = ["Class A", "Class B", "Class C"]
   const statuses = ["active", "inactive", "graduated"]
   const genders = ["male", "female"]
+  
+  // Surah list for the dropdown
+  const surahList = [
+    "Al-Fatihah", "Al-Baqarah", "Ali Imran", "An-Nisa", "Al-Maidah", "Al-An'am", 
+    "Al-A'raf", "Al-Anfal", "At-Taubah", "Yunus", "Hud", "Yusuf", "Ar-Ra'd", 
+    "Ibrahim", "Al-Hijr", "An-Nahl", "Al-Isra", "Al-Kahf", "Maryam", "Ta-Ha", 
+    "Al-Anbiya", "Al-Hajj", "Al-Mu'minun", "An-Nur", "Al-Furqan", "Ash-Shu'ara", 
+    "An-Naml", "Al-Qasas", "Al-Ankabut", "Ar-Rum", "Luqman", "As-Sajdah", 
+    "Al-Ahzab", "Saba", "Fatir", "Ya-Sin", "As-Saffat", "Sad", "Az-Zumar", 
+    "Ghafir", "Fussilat", "Ash-Shura", "Az-Zukhruf", "Ad-Dukhan", "Al-Jathiyah", 
+    "Al-Ahqaf", "Muhammad", "Al-Fath", "Al-Hujurat", "Qaf", "Adh-Dhariyat", 
+    "At-Tur", "An-Najm", "Al-Qamar", "Ar-Rahman", "Al-Waqi'ah", "Al-Hadid", 
+    "Al-Mujadila", "Al-Hashr", "Al-Mumtahanah", "As-Saff", "Al-Jumu'ah", 
+    "Al-Munafiqun", "At-Taghabun", "At-Talaq", "At-Tahrim", "Al-Mulk", "Al-Qalam", 
+    "Al-Haqqah", "Al-Ma'arij", "Nuh", "Al-Jinn", "Al-Muzzammil", "Al-Muddaththir", 
+    "Al-Qiyamah", "Al-Insan", "Al-Mursalat", "An-Naba", "An-Nazi'at", "Abasa", 
+    "At-Takwir", "Al-Infitar", "Al-Mutaffifin", "Al-Inshiqaq", "Al-Buruj", 
+    "At-Tariq", "Al-A'la", "Al-Ghashiyah", "Al-Fajr", "Al-Balad", "Ash-Shams", 
+    "Al-Layl", "Ad-Duha", "Ash-Sharh", "At-Tin", "Al-Alaq", "Al-Qadr", 
+    "Al-Bayyinah", "Az-Zalzalah", "Al-Adiyat", "Al-Qari'ah", "At-Takathur", 
+    "Al-Asr", "Al-Humazah", "Al-Fil", "Quraysh", "Al-Ma'un", "Al-Kawthar", 
+    "Al-Kafirun", "An-Nasr", "Al-Masad", "Al-Ikhlas", "Al-Falaq", "An-Nas"
+  ]
 
   return (
     <div className="space-y-6">
@@ -342,27 +366,47 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
               <Input
                 id="current_hifz_in_juz"
                 type="number"
-                min="0"
+                min="1"
                 max="30"
                 value={formData.current_hifz_in_juz}
                 onChange={(e) => handleInputChange("current_hifz_in_juz", e.target.value)}
-                placeholder="0"
+                placeholder="1"
               />
               <p className="text-xs text-muted-foreground">Enter number of Juz completed (0-30)</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="current_hifz_in_pages">Current Pages in Juz *</Label>
+              <Label htmlFor="current_hifz_in_pages">Current Pages *</Label>
               <Input
                 id="current_hifz_in_pages"
                 type="number"
-                min="0"
-                max="604"
+                min="1"
+                max="20"
                 value={formData.current_hifz_in_pages}
                 onChange={(e) => handleInputChange("current_hifz_in_pages", e.target.value)}
-                placeholder="0"
+                placeholder="1"
               />
-              <p className="text-xs text-muted-foreground">Enter current pages in ongoing Juz (0-604)</p>
+              <p className="text-xs text-muted-foreground">Enter current pages in ongoing Juz (1 - 20)</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="current_hifz_in_surah">Current Surah</Label>
+              <Select
+                value={formData.current_hifz_in_surah || ""}
+                onValueChange={(value) => handleInputChange("current_hifz_in_surah", value)}
+              >
+                <SelectTrigger className="cursor-pointer">
+                  <SelectValue placeholder="Select current surah" />
+                </SelectTrigger>
+                <SelectContent>
+                  {surahList.map((surah, index) => (
+                    <SelectItem key={index + 1} value={surah} className="cursor-pointer">
+                      {index + 1}. {surah}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">Select the current surah being memorized</p>
             </div>
           </div>
         </CardContent>

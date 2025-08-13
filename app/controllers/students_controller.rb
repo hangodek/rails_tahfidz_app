@@ -79,7 +79,7 @@ class StudentsController < ApplicationController
 
   private
 
-  def create_student_params
+  def student_params
     params.expect(student: [ :name, :current_hifz_in_juz, :current_hifz_in_pages, :current_hifz_in_surah, :avatar, :class_level, :phone, :email, :status, :gender, :birth_place, :birth_date, :address, :father_name, :mother_name, :father_phone, :mother_phone, :date_joined ])
   end
 
