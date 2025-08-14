@@ -48,7 +48,7 @@ export function DailySubmissionsChart({ data }: DailySubmissionsChartProps) {
   }
 
   return (
-    <Card className="col-span-2 border-gray-200/60 shadow-lg">
+    <Card className="border-gray-200/60 shadow-lg">
       <CardHeader>
         <div className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0">
           <div>

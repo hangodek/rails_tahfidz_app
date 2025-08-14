@@ -53,7 +53,7 @@ class DashboardController < ApplicationController
     # Daily submissions for chart (configurable date range)
     from_date = params[:from]&.to_date || 6.days.ago.to_date
     to_date = params[:to]&.to_date || Date.current
-    
+
     daily_submissions = (from_date..to_date).map do |date|
       {
         date: date.strftime("%m/%d"),
@@ -70,6 +70,20 @@ class DashboardController < ApplicationController
       }
     end.select { |data| data[:students] > 0 }
 
+    # Monthly progress data (last 6 months)
+    monthly_progress = (5.months.ago.beginning_of_month.to_date..Date.current.end_of_month).
+                      group_by(&:beginning_of_month).map do |month_start, dates|
+      month_range = month_start..month_start.end_of_month
+      revision_count = Activity.where(created_at: month_range, activity_type: 'revision').count
+      memorization_count = Activity.where(created_at: month_range, activity_type: 'memorization').count
+      
+      {
+        month: month_start.strftime("%b"),
+        revision: revision_count,
+        memorization: memorization_count
+      }
+    end
+
     render inertia: "Dashboard/Index", props: {
       user: user,
       stats: {
@@ -81,7 +95,8 @@ class DashboardController < ApplicationController
       top_students: top_students,
       recent_activities: recent_activities,
       daily_submissions: daily_submissions,
-      juz_distribution: juz_distribution
+      juz_distribution: juz_distribution,
+      monthly_progress: monthly_progress
     }
   end
 

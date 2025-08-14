@@ -44,6 +44,12 @@ interface JuzDistribution {
   students: number
 }
 
+interface MonthlyProgress {
+  month: string
+  revision: number
+  memorization: number
+}
+
 interface DashboardProps {
   user: any
   stats: DashboardStats
@@ -51,6 +57,7 @@ interface DashboardProps {
   recent_activities: RecentActivity[]
   daily_submissions: DailySubmission[]
   juz_distribution: JuzDistribution[]
+  monthly_progress: MonthlyProgress[]
 }
 
 export default function DashboardIndex({ 
@@ -58,7 +65,8 @@ export default function DashboardIndex({
   top_students, 
   recent_activities, 
   daily_submissions, 
-  juz_distribution 
+  juz_distribution,
+  monthly_progress 
 }: DashboardProps) {
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -87,17 +95,17 @@ export default function DashboardIndex({
         </div>
 
         {/* Charts Section - Hidden on mobile, shown on tablet+ */}
-        <div className="hidden md:flex md:flex-col lg:grid gap-6 lg:grid-cols-3">
-          {/* Daily Pages Chart with Date Range */}
+        <div className="hidden md:block space-y-6">
+          {/* Daily Submissions Chart with Date Range */}
           <DailySubmissionsChart data={daily_submissions} />
 
-          {/* Juz Distribution */}
+          {/* Juz Distribution Chart - Full Width Below */}
           <JuzDistributionChart data={juz_distribution} />
         </div>
 
         {/* Progress Chart - Hidden on mobile, shown on tablet+ */}
         <div className="hidden md:block">
-          <ProgressChart />
+          <ProgressChart data={monthly_progress} />
         </div>
 
         {/* Bottom Section */}

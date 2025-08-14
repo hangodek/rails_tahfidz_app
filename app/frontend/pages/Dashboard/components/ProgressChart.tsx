@@ -11,29 +11,29 @@ import {
 } from "recharts"
 import { TrendingUp } from "lucide-react"
 
-// Global murajaah data (would come from Rails props)
-const globalMurajaahData = [
-  { month: "Jan", recited: 45 },
-  { month: "Feb", recited: 52 },
-  { month: "Mar", recited: 68 },
-  { month: "Apr", recited: 71 },
-  { month: "May", recited: 84 },
-  { month: "Jun", recited: 92 },
-]
+interface MonthlyProgress {
+  month: string
+  revision: number
+  memorization: number
+}
 
-export function ProgressChart() {
+interface ProgressChartProps {
+  data: MonthlyProgress[]
+}
+
+export function ProgressChart({ data }: ProgressChartProps) {
   return (
     <Card className="border-gray-200/60 shadow-lg">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <TrendingUp className="h-5 w-5" />
-          Monthly Murajaah Progress
+          Monthly Revision & Memorization Progress
         </CardTitle>
-        <CardDescription>Total juz recited by all students per month</CardDescription>
+        <CardDescription>Monthly activities by all students</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={globalMurajaahData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <LineChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
             <XAxis 
               dataKey="month" 
@@ -51,7 +51,20 @@ export function ProgressChart() {
             <Legend 
               wrapperStyle={{ fontSize: '12px' }}
             />
-            <Line type="monotone" dataKey="recited" stroke="#10b981" strokeWidth={3} name="Recited Juz" />
+            <Line 
+              type="monotone" 
+              dataKey="revision" 
+              stroke="#10b981" 
+              strokeWidth={3} 
+              name="Revision Activities" 
+            />
+            <Line 
+              type="monotone" 
+              dataKey="memorization" 
+              stroke="#3b82f6" 
+              strokeWidth={3} 
+              name="Memorization Activities" 
+            />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>

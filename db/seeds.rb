@@ -12,6 +12,7 @@ puts "Destryoing existing records..."
 
 User.destroy_all
 Student.destroy_all
+Activity.destroy_all
 
 puts "Seeding initial data..."
 
@@ -28,6 +29,15 @@ MALE_FIRST_NAMES = [ "Adam", "Yusuf", "Ibrahim", "Musa", "Dawud", "Sulaiman", "Z
 FEMALE_FIRST_NAMES = [ "Maryam", "Fatima", "Aisha", "Khadija", "Zainab", "Safiya", "Hafsa", "Ruqayyah", "Asma", "Hajar" ]
 LAST_NAMES = [ "Khan", "Ahmed", "Ali", "Hussain", "Malik", "Abdullah", "Rahman", "Siddiqui", "Farooq", "Iqbal" ]
 CITIES = [ "Jakarta", "Surabaya", "Bandung", "Medan", "Semarang", "Makassar", "Palembang", "Depok", "Tangerang", "Bekasi" ]
+
+# Activity related data
+ACTIVITY_TYPES = [ "memorization", "revision" ]
+ACTIVITY_GRADES = [ "excellent", "good", "fair", "needs_improvement" ]
+SURAHS = [
+  "Al-Fatihah", "Al-Baqarah", "Ali 'Imran", "An-Nisa", "Al-Ma'idah", "Al-An'am",
+  "Al-A'raf", "Al-Anfal", "At-Tawbah", "Yunus", "Hud", "Yusuf", "Ar-Ra'd",
+  "Ibrahim", "Al-Hijr", "An-Nahl", "Al-Isra", "Al-Kahf", "Maryam", "Ta-Ha"
+]
 
 # --- Generate 20 dummy student records ---
 20.times do |i|
@@ -72,3 +82,45 @@ end
 
 puts "Finished!"
 puts "Created #{Student.count} student records."
+
+puts "Creating activities for students..."
+
+# Create activities for each student
+Student.all.each do |student|
+  # Create 3-15 random activities for each student over the past 60 days
+  activity_count = rand(3..15)
+
+  activity_count.times do
+    activity_type = ACTIVITY_TYPES.sample
+    activity_grade = ACTIVITY_GRADES.sample
+    surah = SURAHS.sample
+
+    # Random date within the last 60 days
+    created_date = rand(60.days.ago..Time.current)
+
+    # Generate random page numbers
+    page_from = rand(1..15)
+    page_to = page_from + rand(1..5)
+
+    # Generate random juz number based on student's current juz
+    current_juz = student.current_hifz_in_juz.to_i
+    activity_juz = rand([ 1, current_juz - 2 ].max..[ current_juz + 1, 30 ].min)
+
+    Activity.create!(
+      student: student,
+      activity_type: activity_type,
+      activity_grade: activity_grade,
+      surah_from: surah,
+      surah_to: surah,
+      page_from: page_from,
+      page_to: page_to,
+      juz: activity_juz,
+      notes: "#{activity_type.humanize} session for #{surah} - Grade: #{activity_grade.humanize}",
+      created_at: created_date,
+      updated_at: created_date
+    )
+  end
+end
+
+puts "Created #{Activity.count} activities."
+puts "Seeding completed successfully!"

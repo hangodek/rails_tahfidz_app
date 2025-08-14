@@ -38,7 +38,7 @@ export function JuzDistributionChart({ data }: JuzDistributionChartProps) {
         </CardTitle>
         <CardDescription>Student distribution based on current memorization juz</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="mt-2">
         <ResponsiveContainer width="100%" height={250}>
           <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
             <Pie
