@@ -647,7 +647,7 @@ export default function StudentShow({ student, recent_activities, all_activities
               <CardDescription>Summary of {student?.name}'s achievements</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
                   <div className="text-lg font-bold text-purple-600 truncate">{student?.current_hifz_in_surah}</div>
                   <div className="text-sm text-muted-foreground">Current Surah</div>
