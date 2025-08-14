@@ -6,6 +6,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import {
@@ -73,6 +81,23 @@ interface Activity {
   created_at: string
 }
 
+// Detailed activity type for modal
+interface DetailedActivity {
+  id: number
+  activity: string
+  time: string
+  type: string
+  date: string
+  created_at: string
+  grade: string
+  surah_from: string
+  surah_to: string
+  page_from: number
+  page_to: number
+  juz: number
+  notes?: string
+}
+
 // Monthly progress data
 interface MonthlyProgress {
   month: string
@@ -134,7 +159,8 @@ const getStudentData = (student: Student, recent_activities: Activity[], startDa
 
 interface StudentShowProps {
   student: Student // The actual student data object from Rails controller
-  recent_activities: Activity[] // Recent activities from backend
+  recent_activities: Activity[] // Recent activities from backend (limited to 5)
+  all_activities: DetailedActivity[] // All activities for modal
   total_activities: number // Total count of activities
   monthly_progress: MonthlyProgress[] // Monthly progress data
   grade_distribution: GradeDistribution[] // Grade distribution data
@@ -142,7 +168,7 @@ interface StudentShowProps {
   monthly_activities: MonthlyActivities[] // Monthly activities data
 }
 
-export default function StudentShow({ student, recent_activities, total_activities, monthly_progress, grade_distribution, type_distribution, monthly_activities }: StudentShowProps) {
+export default function StudentShow({ student, recent_activities, all_activities, total_activities, monthly_progress, grade_distribution, type_distribution, monthly_activities }: StudentShowProps) {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
     from: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 7 days ago
     to: new Date(),
@@ -642,15 +668,89 @@ export default function StudentShow({ student, recent_activities, total_activiti
           {/* Recent Activities */}
           <Card className="border-gray-200/60 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
-                Recent Activities
-              </CardTitle>
-              <CardDescription>Latest activities of {student?.name}</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5" />
+                    Recent Activities
+                  </CardTitle>
+                  <CardDescription>Latest activities of {student?.name}</CardDescription>
+                </div>
+                {all_activities.length > 5 && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="cursor-pointer border-gray-200/60">
+                        View All ({all_activities.length})
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>All Activities - {student?.name}</DialogTitle>
+                        <DialogDescription>
+                          Complete history of memorization and revision activities
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4 mt-4">
+                        {all_activities.map((activity, index) => (
+                          <div key={activity.id} className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
+                            <div
+                              className={`flex h-8 w-8 items-center justify-center rounded-full text-white text-xs flex-shrink-0 ${
+                                activity.type === "memorization"
+                                  ? "bg-blue-500"
+                                  : activity.type === "revision"
+                                    ? "bg-green-500"
+                                    : "bg-gray-500"
+                              }`}
+                            >
+                              {activity.type === "memorization" ? (
+                                <BookOpen className="h-4 w-4" />
+                              ) : activity.type === "revision" ? (
+                                <Star className="h-4 w-4" />
+                              ) : (
+                                <Target className="h-4 w-4" />
+                              )}
+                            </div>
+                            <div className="flex-1 space-y-2">
+                              <div className="flex items-center justify-between">
+                                <p className="text-sm font-medium">{activity.activity}</p>
+                                <Badge variant={activity.grade === "Excellent" ? "default" : 
+                                              activity.grade === "Good" ? "secondary" : 
+                                              activity.grade === "Fair" ? "outline" : "destructive"}>
+                                  {activity.grade}
+                                </Badge>
+                              </div>
+                              <div className="grid grid-cols-2 gap-4 text-xs text-muted-foreground">
+                                <div>
+                                  <span className="font-medium">Surah:</span> {activity.surah_from}
+                                  {activity.surah_from !== activity.surah_to && ` - ${activity.surah_to}`}
+                                </div>
+                                <div>
+                                  <span className="font-medium">Pages:</span> {activity.page_from}-{activity.page_to}
+                                </div>
+                                <div>
+                                  <span className="font-medium">Juz:</span> {activity.juz || 'N/A'}
+                                </div>
+                                <div>
+                                  <span className="font-medium">Time:</span> {activity.time}
+                                </div>
+                              </div>
+                              {activity.notes && (
+                                <div className="text-xs text-muted-foreground">
+                                  <span className="font-medium">Notes:</span> {activity.notes}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {(studentData?.recentActivities || []).map((activity, index) => (
-                <div key={index} className="flex items-start space-x-3">
+              {recent_activities.map((activity, index) => (
+                <div key={activity.id} className="flex items-start space-x-3">
                   <div
                     className={`flex h-8 w-8 items-center justify-center rounded-full text-white text-xs ${
                       activity.type === "memorization"
@@ -674,11 +774,19 @@ export default function StudentShow({ student, recent_activities, total_activiti
                   </div>
                 </div>
               ))}
-              {(!studentData?.recentActivities || studentData.recentActivities.length === 0) && (
+              {recent_activities.length === 0 && (
                 <div className="text-center py-8">
                   <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">No recent activities found</p>
                   <p className="text-sm text-muted-foreground">Activities will appear here when the student starts memorizing</p>
+                </div>
+              )}
+              {all_activities.length > 5 && (
+                <div className="text-center pt-4 border-t border-gray-200">
+                  <p className="text-xs text-muted-foreground">
+                    Showing 5 most recent activities. 
+                    <span className="font-medium"> {all_activities.length - 5} more activities available.</span>
+                  </p>
                 </div>
               )}
             </CardContent>

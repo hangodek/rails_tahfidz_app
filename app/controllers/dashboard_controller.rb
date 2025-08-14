@@ -36,19 +36,41 @@ class DashboardController < ApplicationController
                            }
                          end
 
-    # Recent activities (last 10)
+    # Recent activities (last 5 for display)
     recent_activities = Activity.joins(:student)
                               .order(created_at: :desc)
-                              .limit(10)
+                              .limit(5)
                               .select("activities.*, students.name as student_name")
                               .map do |activity|
                                 {
+                                  id: activity.id,
                                   student: activity.student_name,
                                   activity: format_activity_description(activity),
                                   time: time_ago_in_words(activity.created_at) + " ago",
                                   type: activity.activity_type
                                 }
                               end
+
+    # All activities for modal
+    all_activities = Activity.joins(:student)
+                           .order(created_at: :desc)
+                           .select("activities.*, students.name as student_name")
+                           .map do |activity|
+                             {
+                               id: activity.id,
+                               student: activity.student_name,
+                               activity: format_activity_description(activity),
+                               time: time_ago_in_words(activity.created_at) + " ago",
+                               type: activity.activity_type,
+                               grade: activity.activity_grade.humanize,
+                               surah_from: activity.surah_from,
+                               surah_to: activity.surah_to,
+                               page_from: activity.page_from,
+                               page_to: activity.page_to,
+                               juz: activity.juz,
+                               notes: activity.notes
+                             }
+                           end
 
     # Daily submissions for chart (configurable date range)
     from_date = params[:from]&.to_date || 6.days.ago.to_date
@@ -94,6 +116,7 @@ class DashboardController < ApplicationController
       },
       top_students: top_students,
       recent_activities: recent_activities,
+      all_activities: all_activities,
       daily_submissions: daily_submissions,
       juz_distribution: juz_distribution,
       monthly_progress: monthly_progress

@@ -16,8 +16,8 @@ class StudentsController < ApplicationController
     student = Student.find(params[:id])
     activities = student.activities.order(created_at: :desc)
 
-    # Get recent activities (last 10)
-    recent_activities = activities.limit(10).map do |activity|
+    # Get recent activities (last 5 for display)
+    recent_activities = activities.limit(5).map do |activity|
       {
         id: activity.id,
         activity: format_activity_description(activity),
@@ -25,6 +25,25 @@ class StudentsController < ApplicationController
         type: activity.activity_type,
         date: activity.created_at.strftime("%Y-%m-%d"),
         created_at: activity.created_at
+      }
+    end
+
+    # Get all activities for modal
+    all_activities = activities.map do |activity|
+      {
+        id: activity.id,
+        activity: format_activity_description(activity),
+        time: time_ago_in_words(activity.created_at) + " ago",
+        type: activity.activity_type,
+        date: activity.created_at.strftime("%Y-%m-%d"),
+        created_at: activity.created_at,
+        grade: activity.activity_grade.humanize,
+        surah_from: activity.surah_from,
+        surah_to: activity.surah_to,
+        page_from: activity.page_from,
+        page_to: activity.page_to,
+        juz: activity.juz,
+        notes: activity.notes
       }
     end
 
@@ -53,9 +72,9 @@ class StudentsController < ApplicationController
     monthly_activities = (5.months.ago.beginning_of_month.to_date..Date.current.end_of_month).
                         group_by(&:beginning_of_month).map do |month_start, dates|
       month_range = month_start..month_start.end_of_month
-      revision_count = activities.where(created_at: month_range, activity_type: 'revision').count
-      memorization_count = activities.where(created_at: month_range, activity_type: 'memorization').count
-      
+      revision_count = activities.where(created_at: month_range, activity_type: "revision").count
+      memorization_count = activities.where(created_at: month_range, activity_type: "memorization").count
+
       {
         month: month_start.strftime("%b"),
         revision: revision_count,
@@ -68,6 +87,7 @@ class StudentsController < ApplicationController
         avatar: student.avatar.attached? ? url_for(student.avatar) : nil
       ),
       recent_activities: recent_activities,
+      all_activities: all_activities,
       total_activities: activities.count,
       monthly_progress: monthly_progress,
       grade_distribution: grade_distribution,

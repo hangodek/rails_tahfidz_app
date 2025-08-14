@@ -28,10 +28,26 @@ interface TopStudent {
 }
 
 interface RecentActivity {
+  id: number
   student: string
   activity: string
   time: string
   type: string
+}
+
+interface DetailedActivity {
+  id: number
+  student: string
+  activity: string
+  time: string
+  type: string
+  grade: string
+  surah_from: string
+  surah_to: string
+  page_from: number
+  page_to: number
+  juz: number
+  notes?: string
 }
 
 interface DailySubmission {
@@ -55,6 +71,7 @@ interface DashboardProps {
   stats: DashboardStats
   top_students: TopStudent[]
   recent_activities: RecentActivity[]
+  all_activities: DetailedActivity[]
   daily_submissions: DailySubmission[]
   juz_distribution: JuzDistribution[]
   monthly_progress: MonthlyProgress[]
@@ -64,6 +81,7 @@ export default function DashboardIndex({
   stats, 
   top_students, 
   recent_activities, 
+  all_activities,
   daily_submissions, 
   juz_distribution,
   monthly_progress 
@@ -114,7 +132,7 @@ export default function DashboardIndex({
           <TopStudentsRanking students={top_students} />
 
           {/* Recent Activities */}
-          <RecentActivities activities={recent_activities} />
+          <RecentActivities activities={recent_activities} allActivities={all_activities} />
         </div>
       </div>
     </div>
