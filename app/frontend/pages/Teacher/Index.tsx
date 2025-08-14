@@ -1,100 +1,16 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import {
   BookOpen,
   Star,
 } from "lucide-react"
-import { toast } from "@/hooks/use-toast"
 import {
   TeacherHeader,
   StudentSelection,
   ActivityForm,
   RecentActivities,
 } from "./components"
-
-// Audio storage utility
-class AudioStorage {
-  private dbName = "TahfidzAudioDB"
-  private version = 1
-  private db: IDBDatabase | null = null
-
-  async init() {
-    return new Promise<void>((resolve, reject) => {
-      const request = indexedDB.open(this.dbName, this.version)
-
-      request.onerror = () => reject(request.error)
-      request.onsuccess = () => {
-        this.db = request.result
-        resolve()
-      }
-
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result
-        if (!db.objectStoreNames.contains("recordings")) {
-          const store = db.createObjectStore("recordings", { keyPath: "id", autoIncrement: true })
-          store.createIndex("studentId", "studentId", { unique: false })
-          store.createIndex("date", "date", { unique: false })
-        }
-      }
-    })
-  }
-
-  async saveRecording(recording: {
-    studentId: string
-    studentName: string
-    activityType: string
-    audioBlob: Blob
-    duration: number
-    date: string
-    notes?: string
-    evaluation?: string
-  }) {
-    if (!this.db) await this.init()
-
-    return new Promise<number>((resolve, reject) => {
-      const transaction = this.db!.transaction(["recordings"], "readwrite")
-      const store = transaction.objectStore("recordings")
-
-      const recordingData = {
-        ...recording,
-        audioData: recording.audioBlob,
-        timestamp: new Date().toISOString(),
-      }
-
-      const request = store.add(recordingData)
-      request.onsuccess = () => resolve(request.result as number)
-      request.onerror = () => reject(request.error)
-    })
-  }
-
-  async getRecordingsByStudent(studentId: string) {
-    if (!this.db) await this.init()
-
-    return new Promise<any[]>((resolve, reject) => {
-      const transaction = this.db!.transaction(["recordings"], "readonly")
-      const store = transaction.objectStore("recordings")
-      const index = store.index("studentId")
-
-      const request = index.getAll(studentId)
-      request.onsuccess = () => resolve(request.result)
-      request.onerror = () => reject(request.error)
-    })
-  }
-
-  async getAllRecordings() {
-    if (!this.db) await this.init()
-
-    return new Promise<any[]>((resolve, reject) => {
-      const transaction = this.db!.transaction(["recordings"], "readonly")
-      const store = transaction.objectStore("recordings")
-
-      const request = store.getAll()
-      request.onsuccess = () => resolve(request.result)
-      request.onerror = () => reject(request.error)
-    })
-  }
-}
 
 // Activity types
 const activityTypes = [
@@ -250,14 +166,6 @@ type TeacherIndexProps = {
 export default function TeacherIndex({ students, recent_activities }: TeacherIndexProps) {
   const [selectedStudent, setSelectedStudent] = useState<string>("")
   const [activityType, setActivityType] = useState<string>("")
-  const [isRecording, setIsRecording] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
-  const [recordingTime, setRecordingTime] = useState(0)
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
-  const [audioUrl, setAudioUrl] = useState<string>("")
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isSaved, setIsSaved] = useState(false)
-  const [savedRecordings, setSavedRecordings] = useState<any[]>([])
 
   // Activity form fields
   const [activityDetails, setActivityDetails] = useState({
@@ -270,196 +178,20 @@ export default function TeacherIndex({ students, recent_activities }: TeacherInd
     evaluation: "",
   })
 
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const timerRef = useRef<number | null>(null)
-  const audioStorage = useRef(new AudioStorage())
-
   const currentStudent = students.find((s) => s.id === selectedStudent)
 
-  useEffect(() => {
-    audioStorage.current.init()
-    loadSavedRecordings()
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-      }
-      if (audioUrl) {
-        URL.revokeObjectURL(audioUrl)
-      }
-    }
-  }, [audioUrl])
-
-  const loadSavedRecordings = async () => {
-    try {
-      const recordings = await audioStorage.current.getAllRecordings()
-      setSavedRecordings(recordings.slice(-5)) // Show last 5 recordings
-    } catch (error) {
-      console.error("Error loading recordings:", error)
-    }
-  }
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mediaRecorder = new MediaRecorder(stream)
-      mediaRecorderRef.current = mediaRecorder
-
-      const chunks: BlobPart[] = []
-      mediaRecorder.ondataavailable = (event) => {
-        chunks.push(event.data)
-      }
-
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: "audio/wav" })
-        setAudioBlob(blob)
-        const url = URL.createObjectURL(blob)
-        setAudioUrl(url)
-        setIsSaved(false)
-        stream.getTracks().forEach((track) => track.stop())
-      }
-
-      mediaRecorder.start()
-      setIsRecording(true)
-      setIsPaused(false)
-      setRecordingTime(0)
-
-      timerRef.current = setInterval(() => {
-        setRecordingTime((prev) => prev + 1)
-      }, 1000)
-
-      toast({
-        title: "Recording Started",
-        description: "Started recording student voice...",
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Cannot access microphone. Please ensure microphone permission is granted.",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const pauseRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      if (isPaused) {
-        mediaRecorderRef.current.resume()
-        timerRef.current = setInterval(() => {
-          setRecordingTime((prev) => prev + 1)
-        }, 1000)
-      } else {
-        mediaRecorderRef.current.pause()
-        if (timerRef.current) {
-          clearInterval(timerRef.current)
-        }
-      }
-      setIsPaused(!isPaused)
-    }
-  }
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop()
-      setIsRecording(false)
-      setIsPaused(false)
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-      }
-      toast({
-        title: "Recording Completed",
-        description: "Voice recording has been saved. Don't forget to save to database!",
-      })
-    }
-  }
-
-  const playAudio = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause()
-      } else {
-        audioRef.current.play()
-      }
-      setIsPlaying(!isPlaying)
-    }
-  }
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-  }
-
-  const handleSaveActivity = async () => {
-    if (!selectedStudent || !activityType) {
-      toast({
-        title: "Error",
-        description: "Please select student and activity type first.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    try {
-      // Save recording to IndexedDB if exists
-      if (audioBlob && currentStudent) {
-        await audioStorage.current.saveRecording({
-          studentId: selectedStudent,
-          studentName: currentStudent.name,
-          activityType,
-          audioBlob,
-          duration: recordingTime,
-          date: new Date().toISOString().split("T")[0],
-          notes: activityDetails.notes,
-          evaluation: activityDetails.evaluation,
-        })
-        setIsSaved(true)
-      }
-
-      // Here you would typically save activity to your backend via Inertia.post or similar
-      toast({
-        title: "Activity Saved",
-        description: `Activity for ${currentStudent?.name} has been saved${audioBlob ? " with audio recording" : ""}.`,
-      })
-
-      // Reset form
-      setActivityDetails({
-        surahFrom: "",
-        surahTo: "",
-        pageFrom: "",
-        pageTo: "",
-        juz: "",
-        notes: "",
-        evaluation: "",
-      })
-      setAudioBlob(null)
-      setAudioUrl("")
-      setRecordingTime(0)
-      setIsSaved(false)
-
-      // Reload saved recordings
-      loadSavedRecordings()
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save activity. Please try again.",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const downloadAudio = () => {
-    if (audioBlob && currentStudent) {
-      const url = URL.createObjectURL(audioBlob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `${currentStudent.name}_${new Date().toISOString().split("T")[0]}.wav`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    }
+  const handleSaveActivity = () => {
+    // This function is now handled by the ActivityForm component itself
+    // Reset form after successful save
+    setActivityDetails({
+      surahFrom: "",
+      surahTo: "",
+      pageFrom: "",
+      pageTo: "",
+      juz: "",
+      notes: "",
+      evaluation: "",
+    })
   }
 
   return (
