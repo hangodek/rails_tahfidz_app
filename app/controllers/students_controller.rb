@@ -49,6 +49,20 @@ class StudentsController < ApplicationController
       }
     end
 
+    # Calculate monthly activity distribution (last 6 months)
+    monthly_activities = (5.months.ago.beginning_of_month.to_date..Date.current.end_of_month).
+                        group_by(&:beginning_of_month).map do |month_start, dates|
+      month_range = month_start..month_start.end_of_month
+      revision_count = activities.where(created_at: month_range, activity_type: 'revision').count
+      memorization_count = activities.where(created_at: month_range, activity_type: 'memorization').count
+      
+      {
+        month: month_start.strftime("%b"),
+        revision: revision_count,
+        memorization: memorization_count
+      }
+    end
+
     render inertia: "Student/Show", props: {
       student: student.as_json.merge(
         avatar: student.avatar.attached? ? url_for(student.avatar) : nil
@@ -57,7 +71,8 @@ class StudentsController < ApplicationController
       total_activities: activities.count,
       monthly_progress: monthly_progress,
       grade_distribution: grade_distribution,
-      type_distribution: type_distribution
+      type_distribution: type_distribution,
+      monthly_activities: monthly_activities
     }
   end
 

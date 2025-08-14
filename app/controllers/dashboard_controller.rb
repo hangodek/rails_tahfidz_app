@@ -74,9 +74,9 @@ class DashboardController < ApplicationController
     monthly_progress = (5.months.ago.beginning_of_month.to_date..Date.current.end_of_month).
                       group_by(&:beginning_of_month).map do |month_start, dates|
       month_range = month_start..month_start.end_of_month
-      revision_count = Activity.where(created_at: month_range, activity_type: 'revision').count
-      memorization_count = Activity.where(created_at: month_range, activity_type: 'memorization').count
-      
+      revision_count = Activity.where(created_at: month_range, activity_type: "revision").count
+      memorization_count = Activity.where(created_at: month_range, activity_type: "memorization").count
+
       {
         month: month_start.strftime("%b"),
         revision: revision_count,

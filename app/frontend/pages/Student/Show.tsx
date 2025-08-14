@@ -93,6 +93,13 @@ interface TypeDistribution {
   color: string
 }
 
+// Monthly activities data
+interface MonthlyActivities {
+  month: string
+  revision: number
+  memorization: number
+}
+
 // Generate daily submissions data for date range
 const generateDailySubmissions = (startDate: Date, endDate: Date, activities: Activity[]) => {
   const data = []
@@ -132,9 +139,10 @@ interface StudentShowProps {
   monthly_progress: MonthlyProgress[] // Monthly progress data
   grade_distribution: GradeDistribution[] // Grade distribution data
   type_distribution: TypeDistribution[] // Activity type distribution data
+  monthly_activities: MonthlyActivities[] // Monthly activities data
 }
 
-export default function StudentShow({ student, recent_activities, total_activities, monthly_progress, grade_distribution, type_distribution }: StudentShowProps) {
+export default function StudentShow({ student, recent_activities, total_activities, monthly_progress, grade_distribution, type_distribution, monthly_activities }: StudentShowProps) {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
     from: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), // 7 days ago
     to: new Date(),
@@ -437,6 +445,51 @@ export default function StudentShow({ student, recent_activities, total_activiti
                   name="Juz Completed"
                   dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
                   activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Monthly Activities Chart - Hidden on mobile */}
+        <Card className="hidden md:block border-gray-200/60 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              Monthly Revision & Memorization Activities
+            </CardTitle>
+            <CardDescription>
+              {student?.name}'s monthly activity breakdown - revision vs memorization
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={monthly_activities}>
+                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip 
+                  formatter={(value, name) => [`${value} activities`, name]}
+                  labelFormatter={(label) => `Month: ${label}`}
+                />
+                <Legend />
+                <Line 
+                  type="monotone" 
+                  dataKey="revision" 
+                  stroke="#10b981" 
+                  strokeWidth={3} 
+                  name="Revision Activities"
+                  dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="memorization" 
+                  stroke="#3b82f6" 
+                  strokeWidth={3} 
+                  name="Memorization Activities"
+                  dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
                 />
               </LineChart>
             </ResponsiveContainer>
