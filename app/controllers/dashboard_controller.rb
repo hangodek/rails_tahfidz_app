@@ -16,10 +16,10 @@ class DashboardController < ApplicationController
                                       .select(:student_id)
                                       .distinct
                                       .count
-    total_active_students = Student.where(status: "active").count
+    total_active_students = Student.active.count
 
     # Top students by current Juz level (highest to lowest) - only active students
-    top_students = Student.where(status: "active")
+    top_students = Student.active
                          .where.not(current_hifz_in_juz: [ nil, "" ])
                          .order(Arel.sql("CAST(current_hifz_in_juz AS INTEGER) DESC, CAST(current_hifz_in_pages AS INTEGER) DESC"))
                          .limit(10)
@@ -83,7 +83,7 @@ class DashboardController < ApplicationController
 
     # Juz distribution data
     juz_distribution = (1..30).map do |juz|
-      student_count = Student.where(current_hifz_in_juz: juz.to_s).count
+      student_count = Student.active.where(current_hifz_in_juz: juz.to_s).count
       {
         juz: "Juz #{juz}",
         students: student_count

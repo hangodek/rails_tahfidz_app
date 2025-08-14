@@ -1,6 +1,6 @@
 class TeachersController < ApplicationController
   def index
-    students = Student.includes(:activities).order(name: :asc)
+    students = Student.active.includes(:activities).order(name: :asc)
 
     render inertia: "Teacher/Index", props: {
       students: students.as_json(only: [ :id, :name, :class_level, :current_hifz_in_juz, :current_hifz_in_pages, :current_hifz_in_surah ]),

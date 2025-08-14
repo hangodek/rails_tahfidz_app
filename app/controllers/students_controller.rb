@@ -1,7 +1,7 @@
 class StudentsController < ApplicationController
   include ActionView::Helpers::DateHelper
   def index
-    students = Student.all.order(name: :asc).map do |student|
+    students = Student.active.order(name: :asc).map do |student|
       student.as_json.merge(
         avatar: student.avatar.attached? ? url_for(student.avatar) : nil
       )
