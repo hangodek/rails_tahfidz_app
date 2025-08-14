@@ -1,4 +1,6 @@
 class Activity < ApplicationRecord
+  has_one_attached :audio
+
   belongs_to :student
 
   enum :activity_type, {

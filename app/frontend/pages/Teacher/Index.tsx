@@ -9,8 +9,6 @@ import { toast } from "@/hooks/use-toast"
 import {
   TeacherHeader,
   StudentSelection,
-  VoiceRecording,
-  SavedRecordings,
   ActivityForm,
   RecentActivities,
 } from "./components"
@@ -481,28 +479,6 @@ export default function TeacherIndex({ students, recent_activities }: TeacherInd
               currentStudent={currentStudent}
             />
 
-            {/* Voice Recording */}
-            <VoiceRecording
-              selectedStudent={selectedStudent}
-              isRecording={isRecording}
-              isPaused={isPaused}
-              recordingTime={recordingTime}
-              audioUrl={audioUrl}
-              isPlaying={isPlaying}
-              isSaved={isSaved}
-              startRecording={startRecording}
-              pauseRecording={pauseRecording}
-              stopRecording={stopRecording}
-              playAudio={playAudio}
-              downloadAudio={downloadAudio}
-              formatTime={formatTime}
-            />
-
-            {/* Saved Recordings */}
-            <SavedRecordings
-              savedRecordings={savedRecordings}
-              formatTime={formatTime}
-            />
           </div>
 
           {/* Activity Form */}

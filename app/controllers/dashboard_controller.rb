@@ -18,47 +18,44 @@ class DashboardController < ApplicationController
                                       .count
     total_active_students = Student.where(status: "active").count
 
-    # Top students by recent activity (last 30 days)
-    top_students = Student.joins(:activities)
-                         .where(activities: { created_at: 30.days.ago..Time.current })
-                         .group("students.id")
-                         .order("COUNT(activities.id) DESC")
-                         .limit(5)
-                         .select("students.*, COUNT(activities.id) as activity_count")
+    # Top students by current Juz level (highest to lowest) - only active students
+    top_students = Student.where(status: "active")
+                         .where.not(current_hifz_in_juz: [ nil, "" ])
+                         .order(Arel.sql("CAST(current_hifz_in_juz AS INTEGER) DESC, CAST(current_hifz_in_pages AS INTEGER) DESC"))
+                         .limit(10)
                          .map do |student|
                            {
                              id: student.id,
                              name: student.name,
                              current_juz: student.current_hifz_in_juz,
-                             activity_count: student.activity_count,
+                             activity_count: student.activities.count,
                              progress: calculate_progress(student.current_hifz_in_juz.to_i),
                              avatar: student.avatar.attached? ? url_for(student.avatar) : nil
                            }
                          end
 
     # Recent activities (last 5 for display)
-    recent_activities = Activity.joins(:student)
+    recent_activities = Activity.includes(:student, audio_attachment: :blob)
                               .order(created_at: :desc)
                               .limit(5)
-                              .select("activities.*, students.name as student_name")
                               .map do |activity|
                                 {
                                   id: activity.id,
-                                  student: activity.student_name,
+                                  student: activity.student.name,
                                   activity: format_activity_description(activity),
                                   time: time_ago_in_words(activity.created_at) + " ago",
-                                  type: activity.activity_type
+                                  type: activity.activity_type,
+                                  audio_url: activity.audio.attached? ? url_for(activity.audio) : nil
                                 }
                               end
 
     # All activities for modal
-    all_activities = Activity.joins(:student)
+    all_activities = Activity.includes(:student, audio_attachment: :blob)
                            .order(created_at: :desc)
-                           .select("activities.*, students.name as student_name")
                            .map do |activity|
                              {
                                id: activity.id,
-                               student: activity.student_name,
+                               student: activity.student.name,
                                activity: format_activity_description(activity),
                                time: time_ago_in_words(activity.created_at) + " ago",
                                type: activity.activity_type,
@@ -68,7 +65,8 @@ class DashboardController < ApplicationController
                                page_from: activity.page_from,
                                page_to: activity.page_to,
                                juz: activity.juz,
-                               notes: activity.notes
+                               notes: activity.notes,
+                               audio_url: activity.audio.attached? ? url_for(activity.audio) : nil
                              }
                            end
 

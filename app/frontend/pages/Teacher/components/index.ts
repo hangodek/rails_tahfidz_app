@@ -1,6 +1,4 @@
 export { TeacherHeader } from "./TeacherHeader"
 export { StudentSelection } from "./StudentSelection"
-export { VoiceRecording } from "./VoiceRecording"
-export { SavedRecordings } from "./SavedRecordings"
 export { ActivityForm } from "./ActivityForm"
 export { RecentActivities } from "./RecentActivities"

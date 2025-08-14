@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Save } from "lucide-react"
 import { router } from "@inertiajs/react"
+import { AudioRecorder } from "./AudioRecorder"
+import { useState } from "react"
 
 interface ActivityType {
   value: string
@@ -62,6 +64,9 @@ export function ActivityForm({
   currentStudent,
 }: ActivityFormProps) {
   
+  // Audio recording state
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  
   const calculateNewProgress = () => {
     if (!activityDetails.juz || !activityDetails.pageTo) return null;
     
@@ -117,9 +122,26 @@ export function ActivityForm({
       new_hifz_surah: activityType === 'memorization' ? activityDetails.surahTo : null
     };
 
-    router.post(`/students/${selectedStudent}/activities`, {
-      activity: activityData
-    }, {
+    // Create FormData if audio is present, otherwise use regular data
+    let submitData;
+    if (audioBlob) {
+      const formData = new FormData();
+      
+      // Add all activity fields
+      Object.entries(activityData).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          formData.append(`activity[${key}]`, value.toString());
+        }
+      });
+      
+      // Add audio file
+      formData.append('activity[audio]', audioBlob, 'recording.webm');
+      submitData = formData;
+    } else {
+      submitData = { activity: activityData };
+    }
+
+    router.post(`/students/${selectedStudent}/activities`, submitData, {
       onSuccess: () => {
         // Reset form
         setActivityDetails({
@@ -132,6 +154,7 @@ export function ActivityForm({
           evaluation: "",
         });
         setActivityType("");
+        setAudioBlob(null);
         // Also call the original handler for any additional local actions
         handleSaveActivity();
       },
@@ -289,6 +312,12 @@ export function ActivityForm({
                 className="border-gray-200/60"
               />
             </div>
+
+            {/* Audio Recording Component */}
+            <AudioRecorder
+              onAudioRecorded={setAudioBlob}
+              disabled={!selectedStudent || !activityType}
+            />
 
             <div className="space-y-2">
               <Label>Evaluation <span className="text-red-500">*</span></Label>

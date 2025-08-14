@@ -24,7 +24,8 @@ class StudentsController < ApplicationController
         time: time_ago_in_words(activity.created_at) + " ago",
         type: activity.activity_type,
         date: activity.created_at.strftime("%Y-%m-%d"),
-        created_at: activity.created_at
+        created_at: activity.created_at,
+        audio_url: activity.audio.attached? ? url_for(activity.audio) : nil
       }
     end
 
@@ -43,7 +44,8 @@ class StudentsController < ApplicationController
         page_from: activity.page_from,
         page_to: activity.page_to,
         juz: activity.juz,
-        notes: activity.notes
+        notes: activity.notes,
+        audio_url: activity.audio.attached? ? url_for(activity.audio) : nil
       }
     end
 

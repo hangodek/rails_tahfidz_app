@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen } from "lucide-react"
+import { AudioPlayer } from "@/components/AudioPlayer"
 
 interface Student {
   id: string
@@ -26,6 +27,7 @@ interface Activity {
   juz: number | null
   notes: string | null
   created_at: string
+  audio_url?: string | null
   student: {
     id: string
     name: string
@@ -106,6 +108,15 @@ export function RecentActivities({ currentStudent, activityTypes, recentActiviti
                   </p>
                   {activity.notes && (
                     <p className="text-xs text-muted-foreground italic truncate">{activity.notes}</p>
+                  )}
+                  {activity.audio_url && (
+                    <div className="mt-1">
+                      <AudioPlayer 
+                        audioUrl={activity.audio_url} 
+                        size="sm"
+                        className="max-w-full"
+                      />
+                    </div>
                   )}
                 </div>
               </div>

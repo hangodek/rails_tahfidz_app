@@ -44,6 +44,7 @@ import {
   ChevronDown,
   BarChart3,
 } from "lucide-react"
+import { AudioPlayer } from "@/components/AudioPlayer"
 import { router } from "@inertiajs/react"
 
 // Student type definition matching database schema
@@ -79,6 +80,7 @@ interface Activity {
   type: string
   date: string
   created_at: string
+  audio_url?: string | null
 }
 
 // Detailed activity type for modal
@@ -96,6 +98,7 @@ interface DetailedActivity {
   page_to: number
   juz: number
   notes?: string
+  audio_url?: string | null
 }
 
 // Monthly progress data
@@ -691,7 +694,7 @@ export default function StudentShow({ student, recent_activities, all_activities
                         </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4 mt-4">
-                        {all_activities.map((activity, index) => (
+                        {all_activities.map((activity) => (
                           <div key={activity.id} className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
                             <div
                               className={`flex h-8 w-8 items-center justify-center rounded-full text-white text-xs flex-shrink-0 ${
@@ -739,6 +742,15 @@ export default function StudentShow({ student, recent_activities, all_activities
                                   <span className="font-medium">Notes:</span> {activity.notes}
                                 </div>
                               )}
+                              {activity.audio_url && (
+                                <div className="mt-2">
+                                  <AudioPlayer 
+                                    audioUrl={activity.audio_url} 
+                                    size="sm"
+                                    className="max-w-full"
+                                  />
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -749,7 +761,7 @@ export default function StudentShow({ student, recent_activities, all_activities
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {recent_activities.map((activity, index) => (
+              {recent_activities.map((activity) => (
                 <div key={activity.id} className="flex items-start space-x-3">
                   <div
                     className={`flex h-8 w-8 items-center justify-center rounded-full text-white text-xs ${
@@ -771,6 +783,15 @@ export default function StudentShow({ student, recent_activities, all_activities
                   <div className="flex-1 space-y-1">
                     <p className="text-sm">{activity.activity}</p>
                     <p className="text-xs text-muted-foreground">{activity.time}</p>
+                    {activity.audio_url && (
+                      <div className="mt-1">
+                        <AudioPlayer 
+                          audioUrl={activity.audio_url} 
+                          size="sm"
+                          className="max-w-full"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

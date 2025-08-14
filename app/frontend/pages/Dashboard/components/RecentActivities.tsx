@@ -15,6 +15,7 @@ import {
   Target,
   Star,
 } from "lucide-react"
+import { AudioPlayer } from "@/components/AudioPlayer"
 
 interface RecentActivity {
   id: number
@@ -22,6 +23,7 @@ interface RecentActivity {
   activity: string
   time: string
   type: string
+  audio_url?: string | null
 }
 
 interface DetailedActivity {
@@ -37,6 +39,7 @@ interface DetailedActivity {
   page_to: number
   juz: number
   notes?: string
+  audio_url?: string | null
 }
 
 interface RecentActivitiesProps {
@@ -71,7 +74,7 @@ export function RecentActivities({ activities, allActivities }: RecentActivities
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-4">
-                  {allActivities.map((activity, index) => (
+                  {allActivities.map((activity) => (
                     <div key={activity.id} className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
                       <div
                         className={`flex h-8 w-8 items-center justify-center rounded-full text-white text-xs flex-shrink-0 ${
@@ -122,6 +125,15 @@ export function RecentActivities({ activities, allActivities }: RecentActivities
                             <span className="font-medium">Notes:</span> {activity.notes}
                           </div>
                         )}
+                        {activity.audio_url && (
+                          <div className="mt-2">
+                            <AudioPlayer 
+                              audioUrl={activity.audio_url} 
+                              size="sm"
+                              className="max-w-full"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -132,7 +144,7 @@ export function RecentActivities({ activities, allActivities }: RecentActivities
         </div>
       </CardHeader>
       <CardContent className="space-y-3 sm:space-y-4">
-        {activities.map((activity, index) => (
+        {activities.map((activity) => (
           <div key={activity.id} className="flex items-start space-x-3">
             <div
               className={`flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full text-white text-xs flex-shrink-0 ${
@@ -155,6 +167,15 @@ export function RecentActivities({ activities, allActivities }: RecentActivities
               <p className="text-xs sm:text-sm font-medium">{activity.student}</p>
               <p className="text-xs text-muted-foreground line-clamp-2">{activity.activity}</p>
               <p className="text-xs text-muted-foreground">{activity.time}</p>
+              {activity.audio_url && (
+                <div className="mt-1">
+                  <AudioPlayer 
+                    audioUrl={activity.audio_url} 
+                    size="sm"
+                    className="max-w-full"
+                  />
+                </div>
+              )}
             </div>
           </div>
         ))}
