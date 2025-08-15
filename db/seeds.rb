@@ -69,7 +69,7 @@ JUZ_TO_SURAHS = {
 }
 
 # --- Generate 20 dummy student records ---
-20.times do |i|
+50.times do |i|
   gender = GENDERS.sample
 
   if gender == 'male'

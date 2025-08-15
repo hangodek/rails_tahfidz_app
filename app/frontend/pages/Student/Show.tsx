@@ -102,6 +102,7 @@ interface DetailedActivity {
 interface MonthlyProgress {
   month: string
   completed: number
+  is_projected?: boolean
 }
 
 // Grade distribution data
@@ -148,12 +149,12 @@ const generateDailySubmissions = (startDate: Date, endDate: Date, activities: Ac
 }
 
 // Student specific data
-const getStudentData = (student: Student, recent_activities: Activity[], startDate: Date, endDate: Date) => {
+const getStudentData = (student: Student, all_activities: Activity[], startDate: Date, endDate: Date) => {
   if (!student) return null
 
   return {
-    dailySubmissions: generateDailySubmissions(startDate, endDate, recent_activities),
-    recentActivities: recent_activities,
+    dailySubmissions: generateDailySubmissions(startDate, endDate, all_activities),
+    recentActivities: all_activities,
   }
 }
 
@@ -174,11 +175,21 @@ export default function StudentShow({ student, recent_activities, all_activities
     to: new Date(),
   })
 
-  const studentData = student ? getStudentData(student, recent_activities, dateRange.from, dateRange.to) : null
+  // Convert all_activities to the format expected by generateDailySubmissions
+  const formattedAllActivities = all_activities.map(activity => ({
+    id: activity.id,
+    activity: activity.activity,
+    time: activity.time,
+    type: activity.type,
+    date: activity.date,
+    created_at: activity.created_at
+  }))
 
-  // Calculate today's submissions
+  const studentData = student ? getStudentData(student, formattedAllActivities, dateRange.from, dateRange.to) : null
+
+  // Calculate today's submissions using all activities, not just recent ones
   const todayStr = format(new Date(), "yyyy-MM-dd")
-  const todaySubmissions = recent_activities.filter(activity => activity.date === todayStr).length
+  const todaySubmissions = formattedAllActivities.filter(activity => activity.date === todayStr).length
 
   // Helper function to get avatar URL
   const getAvatarUrl = (avatar?: string): string => {
@@ -446,10 +457,10 @@ export default function StudentShow({ student, recent_activities, all_activities
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
-              Monthly Progress
+              Monthly Progress & Projection
             </CardTitle>
             <CardDescription>
-              {student?.name}'s Quran memorization progress over time (starting from join date: {student?.date_joined})
+              {student?.name}'s Quran memorization progress (3 months history + 3 months projection)
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -459,21 +470,59 @@ export default function StudentShow({ student, recent_activities, all_activities
                 <XAxis dataKey="month" />
                 <YAxis domain={[0, 30]} />
                 <Tooltip 
-                  formatter={(value, name) => [`${value} Juz`, name]}
+                  formatter={(value, name, props) => {
+                    const isProjected = props?.payload?.is_projected
+                    return [`${value} Juz${isProjected ? ' (projected)' : ''}`, name]
+                  }}
                   labelFormatter={(label) => `Month: ${label}`}
                 />
                 <Legend />
+                {/* Actual Progress Line */}
                 <Line 
                   type="monotone" 
-                  dataKey="completed" 
+                  dataKey={(entry) => !entry.is_projected ? entry.completed : null}
                   stroke="#10b981" 
                   strokeWidth={3} 
-                  name="Juz Completed"
+                  name="Actual Progress"
                   dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
                   activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
+                  connectNulls={true}
+                />
+                {/* Projected Progress Line */}
+                <Line 
+                  type="monotone" 
+                  dataKey={(entry) => entry.is_projected ? entry.completed : null}
+                  stroke="#3b82f6" 
+                  strokeWidth={3} 
+                  strokeDasharray="8 4"
+                  name="Projected Progress"
+                  dot={{ fill: '#60a5fa', strokeWidth: 2, r: 4, stroke: '#3b82f6' }}
+                  activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+                  connectNulls={true}
+                />
+                {/* Bridge line to connect actual to projected */}
+                <Line 
+                  type="monotone" 
+                  dataKey="completed"
+                  stroke="#6b7280" 
+                  strokeWidth={1} 
+                  strokeDasharray="2 2"
+                  dot={false}
+                  activeDot={false}
+                  name=""
                 />
               </LineChart>
             </ResponsiveContainer>
+            <div className="mt-4 flex items-center justify-center gap-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-0.5 bg-green-500"></div>
+                <span>Actual Progress</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-0.5 bg-blue-500" style={{borderTop: '2px dashed #3b82f6', backgroundColor: 'transparent'}}></div>
+                <span>Projected Progress</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
 

@@ -277,7 +277,7 @@ export function ActivityForm({
                     </SelectTrigger>
                     <SelectContent>
                       {Array.from({ length: 30 }, (_, i) => (
-                        <SelectItem key={i + 1} value={(i + 1).toString()}>
+                        <SelectItem key={i + 1} value={(i + 1).toString()} className="cursor-pointer">
                           Juz {i + 1}
                         </SelectItem>
                       ))}

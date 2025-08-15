@@ -137,95 +137,137 @@ class StudentsController < ApplicationController
     current_juz = student.current_hifz_in_juz.to_i
     join_date = Date.parse(student.date_joined) rescue Date.current
 
-    # Determine the starting point: either 6 months ago or when they joined, whichever is more recent
-    start_date = [ Date.current - 5.months, join_date ].max.beginning_of_month
+    # Show 3 months back and 3 months forward from current month
+    current_month = Date.current.beginning_of_month
+    start_date = current_month - 3.months
+    end_date = current_month + 3.months
 
     monthly_data = []
 
-    # Generate monthly data from start_date to current month
-    current_month = Date.current.beginning_of_month
-
-    # Calculate how many months from join_date to current date
+    # Calculate total months since joining
     months_since_joining = ((Date.current.year - join_date.year) * 12 + Date.current.month - join_date.month)
 
-    # Analyze activities to understand progress pattern
+    # Get memorization activities ordered by date
     memorization_activities = activities.where(activity_type: "memorization").order(:created_at)
 
-    # Estimate initial juz based on current progress and time since joining
-    if months_since_joining > 0 && current_juz > 0
-      # Assume steady progress, but they might have started with some juz
-      average_monthly_progress = [ current_juz.to_f / [ months_since_joining, 1 ].max, 2.0 ].min
-      initial_juz = [ current_juz - (months_since_joining * average_monthly_progress), 0 ].max.round
+    # Only calculate progression if there are actual memorization activities
+    if memorization_activities.any?
+      # Calculate realistic monthly progress rate based on actual activities
+      first_activity_date = memorization_activities.first.created_at.to_date
+      months_with_activities = ((Date.current.year - first_activity_date.year) * 12 + Date.current.month - first_activity_date.month)
+      months_with_activities = [ months_with_activities, 1 ].max # At least 1 month
+
+      # Calculate average rate based on actual progress with activities
+      actual_progress = current_juz
+      average_monthly_rate = actual_progress.to_f / months_with_activities
+      average_monthly_rate = [ average_monthly_rate, 0.5 ].max # Minimum 0.5 juz per month
+      average_monthly_rate = [ average_monthly_rate, 2.0 ].min # Maximum 2 juz per month
     else
-      initial_juz = [ current_juz - 2, 0 ].max # Conservative estimate
+      # No activities = no progress, flat line at current level
+      average_monthly_rate = 0
+    end
+
+    # Calculate recent activity intensity (last 3 months) for projections
+    recent_activities = memorization_activities.where(
+      created_at: (Date.current - 3.months)..Date.current
+    )
+
+    # Only project growth if there are recent activities
+    if recent_activities.count > 0
+      recent_activity_factor = [ 1.0 + (recent_activities.count / 20.0), 2.0 ].min
+      projected_monthly_rate = average_monthly_rate * recent_activity_factor
+    else
+      # No recent activities = no projected growth
+      projected_monthly_rate = 0
     end
 
     month_iterator = start_date
 
-    while month_iterator <= current_month
+    while month_iterator <= end_date
       month_name = month_iterator.strftime("%b")
 
-      if month_iterator < join_date.beginning_of_month
-        # Before they joined, they had 0 juz
-        completed = 0
-      elsif month_iterator == join_date.beginning_of_month
-        # The month they joined, they started with initial_juz
-        completed = initial_juz
-      elsif month_iterator == current_month
-        # Current month shows their current progress
+      if month_iterator == current_month
+        # Current month: use actual current progress
         completed = current_juz
-      else
-        # Calculate progressive increase from initial to current
-        months_from_joining = ((month_iterator.year - join_date.year) * 12 + month_iterator.month - join_date.month)
+        is_projected = false
+      elsif month_iterator < current_month
+        # Historical months (3 months back)
+        months_back = ((current_month.year - month_iterator.year) * 12 + current_month.month - month_iterator.month)
 
-        # Check if there were memorization activities in this month
+        # Check if there were actual activities in that historical month
         month_activities = memorization_activities.where(
           created_at: month_iterator.beginning_of_month..month_iterator.end_of_month
         )
 
-        # Progressive calculation with activity-based adjustments
-        if months_since_joining > 0
-          base_progress_ratio = months_from_joining.to_f / months_since_joining
-          base_completed = (initial_juz + (current_juz - initial_juz) * base_progress_ratio).round
+        if memorization_activities.any?
+          # Calculate backwards from current progress only if there are overall activities
+          estimated_progress_back_then = current_juz - (months_back * average_monthly_rate)
+          completed = [ estimated_progress_back_then, 0 ].max.round
 
-          # If there were activities this month, ensure some progress
+          # If there were specific activities in that month, ensure some progress was made
           if month_activities.any?
-            # Ensure at least some progress if there were activities
-            previous_completed = monthly_data.any? ? monthly_data.last[:completed] : initial_juz
-            completed = [ base_completed, previous_completed + 0.5 ].max.round
-          else
-            completed = base_completed
+            # Ensure they had at least some progress if they had activities
+            min_progress_for_activities = [ completed + 0.5, current_juz ].min
+            completed = min_progress_for_activities.round
           end
         else
-          completed = initial_juz
+          # No activities at all = they've always been at current level (no growth)
+          completed = current_juz
         end
 
-        # Ensure we never go backwards (hifz never decreases)
-        if monthly_data.any?
-          completed = [ completed, monthly_data.last[:completed] ].max
+        is_projected = false
+      else
+        # Future months (3 months forward)
+        months_forward = ((month_iterator.year - current_month.year) * 12 + month_iterator.month - current_month.month)
+
+        # Only project growth if there's recent activity
+        if projected_monthly_rate > 0
+          projected_progress = current_juz + (months_forward * projected_monthly_rate)
+          completed = [ projected_progress, 30 ].min.round
+        else
+          # No growth projected - stay at current level
+          completed = current_juz
         end
+
+        is_projected = true
       end
+
+      # Ensure we never go above 30 or below 0
+      completed = completed.clamp(0, 30)
 
       monthly_data << {
         month: month_name,
-        completed: completed.clamp(0, 30) # Max 30 juz
+        completed: completed, # Always integer, no decimals
+        is_projected: is_projected
       }
 
       month_iterator = month_iterator.next_month
     end
 
-    # Ensure we have at least 6 months of data for the chart
-    while monthly_data.length < 6
-      previous_start = start_date - (6 - monthly_data.length).months
+    # Final pass: ensure logical progression for historical data
+    # Historical data should gradually increase toward current, but only if there are activities
+    if memorization_activities.any?
+      historical_data = monthly_data.select { |d| !d[:is_projected] }
 
-      monthly_data.unshift({
-        month: previous_start.strftime("%b"),
-        completed: previous_start < join_date.beginning_of_month ? 0 : initial_juz
-      })
+      historical_data.each_with_index do |data, index|
+        next if index == 0 || data[:month] == current_month.strftime("%b")
+
+        prev_data = historical_data[index - 1]
+
+        # Ensure gradual increase, but don't force it if it doesn't make sense
+        if data[:completed] < prev_data[:completed]
+          data[:completed] = prev_data[:completed]
+        elsif data[:completed] == prev_data[:completed] && index < historical_data.length - 1
+          # Small increment if they're the same, but only if it leads toward current
+          next_target = current_juz
+          if data[:completed] < next_target
+            data[:completed] = [ prev_data[:completed] + 1, current_juz ].min
+          end
+        end
+      end
     end
 
-    # Take only the last 6 months
-    monthly_data.last(6)
+    monthly_data
   end
 
   def grade_color(grade)

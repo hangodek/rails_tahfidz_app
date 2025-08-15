@@ -59,7 +59,7 @@ export function RecentActivities({ currentStudent, activityTypes, recentActiviti
 
   // Filter activities for the current student and get the most recent 5
   const studentActivities = recentActivities
-    .filter(activity => activity.student.id === currentStudent.id)
+    .filter(activity => String(activity.student.id) === String(currentStudent.id))
     .slice(0, 5)
 
   const formatTimeAgo = (dateString: string) => {
