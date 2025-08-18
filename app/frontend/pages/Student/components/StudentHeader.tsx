@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Download, Plus, Mic, FileText } from "lucide-react"
+import { ArrowLeft, Download, Plus, Mic, FileText, FileSpreadsheet, Sheet } from "lucide-react"
 import { router } from "@inertiajs/react"
 import {
   DropdownMenu,
@@ -52,6 +52,30 @@ export function StudentHeader({ students = [], filteredStudents }: StudentHeader
     }
   }
 
+  const handleExportCSV = async () => {
+    try {
+      setIsExporting(true)
+      const { exportStudentsToCSV } = await import('@/utils/exportUtils')
+      exportStudentsToCSV(students, filteredStudents)
+    } catch (error) {
+      console.error('Failed to export CSV:', error)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    try {
+      setIsExporting(true)
+      const { exportStudentsToExcel } = await import('@/utils/exportUtils')
+      exportStudentsToExcel(students, filteredStudents)
+    } catch (error) {
+      console.error('Failed to export Excel:', error)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -85,6 +109,14 @@ export function StudentHeader({ students = [], filteredStudents }: StudentHeader
             <DropdownMenuItem onClick={handleExportPDF} className="cursor-pointer" disabled={isExporting}>
               <FileText className="h-4 w-4 mr-2" />
               Export as PDF
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleExportCSV} className="cursor-pointer" disabled={isExporting}>
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+              Export as CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleExportExcel} className="cursor-pointer" disabled={isExporting}>
+              <Sheet className="h-4 w-4 mr-2" />
+              Export as Excel
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
