@@ -110,13 +110,13 @@ export function StudentHeader({ students = [], filteredStudents }: StudentHeader
               <FileText className="h-4 w-4 mr-2" />
               Export as PDF
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleExportCSV} className="cursor-pointer" disabled={isExporting}>
-              <FileSpreadsheet className="h-4 w-4 mr-2" />
-              Export as CSV
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={handleExportExcel} className="cursor-pointer" disabled={isExporting}>
               <Sheet className="h-4 w-4 mr-2" />
               Export as Excel
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleExportCSV} className="cursor-pointer" disabled={isExporting}>
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+              Export as CSV
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
