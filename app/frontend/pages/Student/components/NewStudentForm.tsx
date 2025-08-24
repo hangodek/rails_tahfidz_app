@@ -33,9 +33,11 @@ interface NewStudentFormProps {
   errors: Partial<StudentFormData>
   handleInputChange: (field: keyof StudentFormData, value: string) => void
   handleFileChange: (file: File | null) => void
+  isEdit?: boolean
+  existingAvatar?: string
 }
 
-export function NewStudentForm({ formData, errors, handleInputChange, handleFileChange }: NewStudentFormProps) {
+export function NewStudentForm({ formData, errors, handleInputChange, handleFileChange, isEdit = false, existingAvatar }: NewStudentFormProps) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 
   const handleDateChange = (field: 'birth_date' | 'date_joined') => (date: Date | undefined) => {
@@ -64,6 +66,21 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
       setAvatarPreview(null)
     }
   }
+
+  // Determine which avatar to display
+  const getDisplayAvatar = () => {
+    if (avatarPreview) {
+      // New file selected
+      return avatarPreview
+    }
+    if (isEdit && existingAvatar) {
+      // In edit mode with existing avatar
+      return existingAvatar
+    }
+    return null
+  }
+
+  const displayAvatar = getDisplayAvatar()
 
   const selectedBirthDate = formData.birth_date ? new Date(formData.birth_date + 'T12:00:00') : undefined
   const selectedDateJoined = formData.date_joined ? new Date(formData.date_joined + 'T12:00:00') : undefined
@@ -111,8 +128,8 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
         <CardContent>
           <div className="flex items-center gap-4">
             <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
-              {avatarPreview ? (
-                <img src={avatarPreview} alt="Avatar preview" className="w-full h-full object-cover rounded-full" />
+              {displayAvatar ? (
+                <img src={displayAvatar} alt="Avatar preview" className="w-full h-full object-cover rounded-full" />
               ) : (
                 <User className="h-8 w-8 text-gray-400" />
               )}
@@ -125,7 +142,7 @@ export function NewStudentForm({ formData, errors, handleInputChange, handleFile
                 className="cursor-pointer"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Recommended: Square image, max 5MB
+                {isEdit ? "Upload new photo to replace current (optional)" : "Recommended: Square image, max 5MB"}
               </p>
             </div>
           </div>

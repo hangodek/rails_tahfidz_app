@@ -114,6 +114,31 @@ class StudentsController < ApplicationController
     end
   end
 
+  def edit
+    @student = Student.find(params[:id])
+
+    render inertia: "Student/Edit", props: {
+      student: @student.as_json.merge(
+        avatar: @student.avatar.attached? ? url_for(@student.avatar) : nil
+      )
+    }
+  end
+
+  def update
+    @student = Student.find(params[:id])
+
+    if @student.update(student_params)
+      redirect_to student_path(@student), notice: "Student updated successfully!"
+    else
+      render inertia: "Student/Edit", props: {
+        student: @student.as_json.merge(
+          avatar: @student.avatar.attached? ? url_for(@student.avatar) : nil
+        ),
+        errors: @student.errors
+      }
+    end
+  end
+
   private
 
   def student_params

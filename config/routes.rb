@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resource :session
   resources :dashboard, only: [ :index ]
-  resources :students, only: [ :index, :new, :create, :show ] do
+  resources :students, only: [ :index, :new, :create, :show, :edit, :update ] do
     resources :activities, only: [ :create, :destroy ]
   end
   resources :teachers, only: [ :index ]

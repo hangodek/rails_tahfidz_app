@@ -43,8 +43,10 @@ import {
   ArrowLeft,
   ChevronDown,
   BarChart3,
+  Edit,
 } from "lucide-react"
 import { router } from "@inertiajs/react"
+import { AudioPlayer } from "@/components/AudioPlayer"
 
 // Student type definition matching database schema
 interface Student {
@@ -240,6 +242,15 @@ export default function StudentShow({ student, recent_activities, all_activities
             <p className="text-sm sm:text-base text-muted-foreground">Student's memorization progress and activity details</p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-4 sm:gap-0">
+            <Button
+              variant="default"
+              className="cursor-pointer"
+              onClick={() => router.visit(`/students/${student.id}/edit`)}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Edit Student</span>
+              <span className="sm:hidden">Edit</span>
+            </Button>
             <Button
               variant="outline"
               className="border-gray-200/60 cursor-pointer"
@@ -821,6 +832,7 @@ export default function StudentShow({ student, recent_activities, all_activities
                     <p className="text-sm">{activity.activity}</p>
                     <p className="text-xs text-muted-foreground">{activity.time}</p>
                   </div>
+
                 </div>
               ))}
               {recent_activities.length === 0 && (
